@@ -2,6 +2,7 @@ import tkinter as tk
 import tkinter.messagebox
 import pickle
 
+
 def usr_login():
     usr_name = var_usr_name.get()
     usr_pwd = var_usr_pwd.get() 
@@ -56,20 +57,21 @@ def usr_sign_up():
         elif np != npf:
             tkinter.messagebox.showerror('Error', 'Password and confirm password must be the same!')
         else:
-            if len(np) > 15:
-                tkinter.messagebox.showerror('Error', 'Password must be less than 15 characters!')
-            elif len(np) < 3:
-                tkinter.messagebox.showerror('Error', 'Password must be more than 3 characters')
-            else:
-                if len(nn) > 15:
+            if len(nn) > 15:
                     tkinter.messagebox.showerror('Error', 'Username must be less than 15 characters!')
-                elif len(nn) < 1:
+            elif len(nn) < 1:
                     tkinter.messagebox.showerror('Error', 'Please enter a username.')
-                exist_usr_info[nn] = np
-                with open('usrs_info.pickle', 'wb') as usr_file:
-                    pickle.dump(exist_usr_info, usr_file)
-                    tkinter.messagebox.showinfo('Welcome', 'You have successfully signed up!')
-                    window_sign_up.destroy()
+            else:       
+                if len(np) > 15:
+                    tkinter.messagebox.showerror('Error', 'Password must be less than 15 characters!')
+                elif len(np) < 3:
+                    tkinter.messagebox.showerror('Error', 'Password must be more than 3 characters')
+                else:
+                    exist_usr_info[nn] = np
+                    with open('usrs_info.pickle', 'wb') as usr_file:
+                        pickle.dump(exist_usr_info, usr_file)
+                        tkinter.messagebox.showinfo('Welcome', 'You have successfully signed up!')
+                        window_sign_up.destroy()
 
     window_sign_up = tk.Toplevel(window)
     window_sign_up.geometry('400x300')
