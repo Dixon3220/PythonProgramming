@@ -11,8 +11,19 @@ from pandas import DataFrame
 main = tk.Tk()
 main.title('Main Menu')
 main.geometry('700x500')
+
+#Textbox1
+textbox1 = tk.Text(main, height = 7, width = 30)
+#textbox1.insert()
+textbox1.place(x=200, y=30)
+
+#Textbox2
+textbox2 = tk.Text(main, height = 7, width = 30)
+#textbox2.insert()
+textbox2.place(x=450, y=30)
+
     
-#Display todat's date
+#Display today's date
 today = date.today()
 today_date = tk.Label(main,text= 'Today: '+ str(today),font= ("Arial",13))
 today_date.place(x=10,y=20)
