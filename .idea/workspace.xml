@@ -6,7 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="ecbec057-a79a-400b-a6f5-aa05568e61e0" name="Changes" comment="Changes">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main menu/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main menu/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -75,6 +74,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main menu/main.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
@@ -129,6 +129,7 @@
       <updated>1629705817243</updated>
       <workItem from="1629705826038" duration="1775000" />
       <workItem from="1629708608827" duration="577000" />
+      <workItem from="1630325193032" duration="486000" />
     </task>
     <servers />
   </component>
