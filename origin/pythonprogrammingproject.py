@@ -3,13 +3,31 @@ import tkinter.messagebox
 import pickle
 
 
+def admin_check():
+    with open('usrs_info.pickle', 'rb') as file:
+        model = pickle.load(file)
+    
+    window_admin = tk.Toplevel(window)
+    window_admin.geometry('400x300')
+    window_admin.title('Administration Window')
+    
+    account_list=tkinter.Listbox(window_admin)
+    account_list.pack()
+    
+    account_list.insert(tkinter.END, '| USERNAME: PASSWORD |')
+    for  item  in model.keys(): 
+        account_list.insert(tkinter.END,item+': '+model[item])
+           
+
 def usr_login():
     usr_name = var_usr_name.get()
     usr_pwd = var_usr_pwd.get() 
     
-    # delete the space in the tail of use_name
+    # delete the space in the tail and head of use_name
     while usr_name[-1] == ' ':
         usr_name = usr_name[:-1]
+    while usr_name[0] ==' ':
+        usr_name = usr_name[1:]
     
     try:
         with open('usrs_info.pickle', 'rb') as usr_file:
@@ -18,26 +36,36 @@ def usr_login():
 
         # if cannot find the user, creat a file with a Admin 'python'
         with open('usrs_info.pickle', 'wb') as usr_file:
-            usrs_info = {'python': 'python'}
+            usrs_info = {'admin': '12345'}
             pickle.dump(usrs_info, usr_file)
             usr_file.close()  
- 
-    # See whether the username match in the file
-    if usr_name in usrs_info:
-        
-        if usr_pwd == usrs_info[usr_name]:
-            tkinter.messagebox.showinfo(message='Welcome ! ' + usr_name)
-        # if username match while password wrong
-        else:
-            tkinter.messagebox.showerror(message='Error, your password is wrong, try again.')
-            
-    else:  # if cannot find the username in file 
-        is_sign_up = tkinter.messagebox.askyesno('Hi there', 'You have not sign up yet. Please sign up')
-        # ask for sign up
-        if is_sign_up:
-            usr_sign_up()
 
-            
+    if usr_name == 'admin':
+        if usr_pwd == '12345': 
+            is_check_info = tkinter.messagebox.askyesno('Administration Page',
+                        'Hi, admin. Would you like to check all user\'s information?')
+            if is_check_info:
+                admin_check()
+        else: tkinter.messagebox.showerror('Error', 
+                                         'Sorry, Admin. Your password is wrong, try again.')
+    else:
+        # See whether the username match in the file    
+        if usr_name in usrs_info:
+
+            if usr_pwd == usrs_info[usr_name]:
+                tkinter.messagebox.showinfo(message='Welcome ! ' + usr_name)
+            # if username match while password wrong
+            else:
+                tkinter.messagebox.showerror(message='Error, your password is wrong, try again.')
+
+        else:  # if cannot find the username in file 
+            is_sign_up = tkinter.messagebox.askyesno('Hi there', 'You have not sign up yet. Please sign up')
+            # ask for sign up
+            if is_sign_up:
+                usr_sign_up()
+
+
+
 # Sign up
 def usr_sign_up():
     
@@ -46,9 +74,11 @@ def usr_sign_up():
         npf = new_pwd_confirm.get()
         nn = new_name.get()
         
-        # delete the space in the tail of nn
+        # delete the space in the tail and head of nn
         while nn[-1] == ' ':
             nn = nn[:-1]
+        while nn[0] == ' ':
+            nn = nn[1:]
 
         try:
             with open('usrs_info.pickle', 'rb') as usr_file:
@@ -62,9 +92,11 @@ def usr_sign_up():
         
         # If username already exit in the file 
         if nn in exist_usr_info:
-            is_reset_pwd = tkinter.messagebox.showerror('Hi there', 'Sorry. This username have been taken, please change.')
+            is_reset_pwd = tkinter.messagebox.showerror('Hi there', 
+                                                        'Sorry. This username have been taken, please change.')
         elif np != npf:
-            tkinter.messagebox.showerror('Error', 'Password and confirm password must be the same!')
+            tkinter.messagebox.showerror('Error', 
+                                         'Password and confirm password must be the same!')
         else:
             if len(nn) > 15:
                     tkinter.messagebox.showerror('Error', 'Username must be less than 15 characters!')
@@ -116,9 +148,11 @@ def usr_reset_pwd():
         np = new_pwd.get()
         npc = new_pwd_confirm.get()
         
-        # delete the space in the tail of un
+        # delete the space in the tail and head of un
         while un[-1] == ' ':
             un = un[:-1]
+        while un[0] == ' ':
+            un = un[1:]
 
         try:
             with open('usrs_info.pickle', 'rb') as usr_file:
