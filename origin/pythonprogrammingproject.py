@@ -7,10 +7,15 @@ def usr_login():
     usr_name = var_usr_name.get()
     usr_pwd = var_usr_pwd.get() 
     
+    # delete the space in the tail of use_name
+    while usr_name[-1] == ' ':
+        usr_name = usr_name[:-1]
+    
     try:
         with open('usrs_info.pickle', 'rb') as usr_file:
             usrs_info = pickle.load(usr_file)
     except FileNotFoundError:
+
         # if cannot find the user, creat a file with a Admin 'python'
         with open('usrs_info.pickle', 'wb') as usr_file:
             usrs_info = {'python': 'python'}
@@ -40,6 +45,10 @@ def usr_sign_up():
         np = new_pwd.get()
         npf = new_pwd_confirm.get()
         nn = new_name.get()
+        
+        # delete the space in the tail of nn
+        while nn[-1] == ' ':
+            nn = nn[:-1]
 
         try:
             with open('usrs_info.pickle', 'rb') as usr_file:
@@ -106,6 +115,10 @@ def usr_reset_pwd():
         op = old_pwd.get()
         np = new_pwd.get()
         npc = new_pwd_confirm.get()
+        
+        # delete the space in the tail of un
+        while un[-1] == ' ':
+            un = un[:-1]
 
         try:
             with open('usrs_info.pickle', 'rb') as usr_file:
@@ -121,16 +134,19 @@ def usr_reset_pwd():
         if un in exist_usr_info:
             if op == exist_usr_info[un]:
                 if np == npc:
-                    if len(np) > 15:
-                        tkinter.messagebox.showerror('Error', 'Password must be less than 15 characters!')
-                    elif len(np) < 3:
-                        tkinter.messagebox.showerror('Error', 'Password must be more than 3 characters')
+                    if op == np:
+                        tkinter.messagebox.showerror('Error', 'New password and old password cannot be the same!')
                     else:
-                        exist_usr_info[un] = np
-                        with open('usrs_info.pickle', 'wb') as usr_file:
-                            pickle.dump(exist_usr_info, usr_file)
-                            tkinter.messagebox.showinfo('Thank you', 'You have successfully reset the password!')
-                            window_re_pwd.destroy()
+                        if len(np) > 15:
+                            tkinter.messagebox.showerror('Error', 'Password must be less than 15 characters!')
+                        elif len(np) < 3:
+                            tkinter.messagebox.showerror('Error', 'Password must be more than 3 characters')
+                        else:
+                            exist_usr_info[un] = np
+                            with open('usrs_info.pickle', 'wb') as usr_file:
+                                pickle.dump(exist_usr_info, usr_file)
+                                tkinter.messagebox.showinfo('Thank you', 'You have successfully reset the password!')
+                                window_re_pwd.destroy()
                 else:
                     tkinter.messagebox.showerror('Error', 'New password and confirm password must be the same!')
             else:
