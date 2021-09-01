@@ -102,7 +102,7 @@ def change_budget():
 
 # Add new expenses
 def add_expenses():
-
+    
     
     def addexp_success():
         
@@ -164,6 +164,17 @@ def logout():
     if msgBox == 'yes':
         tk.messagebox.showinfo("Thank you", "See you Again!")
         main.destroy()
+
+
+#optionlist
+option_list = ['Week','Month','Year']
+value_inside1 = tk.StringVar()
+date_menu1 = tk.OptionMenu(main, value_inside1,*option_list)
+date_menu1.place(x=500, y =140)
+value_inside2 = tk.StringVar()
+date_menu2 = tk.OptionMenu(main, value_inside2,*option_list)
+date_menu2.place(x=600, y = 140)
+
 
 
 
