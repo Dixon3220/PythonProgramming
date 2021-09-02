@@ -134,7 +134,7 @@ def show():
     textbox1.place(x=220, y=50)
 
     # Textbox2
-    today_label = tk.Label(main, text=month_name, font=('Arial', 13))
+    today_label = tk.Label(main, text=month_name, font=('Arial', 13),padx=20)
     today_label.place(x=530, y=20)
 
     textbox2 = tk.Text(main, height=4, width=30, font=("Arial", 10))
