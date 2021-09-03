@@ -218,20 +218,25 @@ def show_today_exp(day):
              'Expense': bar_values
              }
     df1 = DataFrame(data1, columns=['Date', 'Expense'])
-    figure1 = plt.Figure(figsize=(5, 3), dpi=80)
+    figure1 = plt.Figure(figsize=(5, 3.4), dpi=80)
     ax1 = figure1.add_subplot(111)
     bar1 = FigureCanvasTkAgg(figure1, main)
-    bar1.get_tk_widget().place(x=300, y=180)
+    bar1.get_tk_widget().place(x=300, y=170)
+    
     df1 = df1[['Date', 'Expense']].groupby('Date').sum()
     df1.plot(kind='bar', legend=True, ax=ax1)
+    for i, v in enumerate(df1['Expense']):
+        ax1.text(i,v//2, str(v), ha= 'center')
+    ax1.axhline(50, linestyle='--', color='red')
+    ax1.set_xticklabels(data1['Date'],rotation=360)
     ax1.set_title('Date Vs. Expense')
 
     # Plot pie charts
-    fig = Figure(figsize=(3, 2.4))  # create a figure object
+    fig = Figure(figsize=(3, 2.7))  # create a figure object
     ax = fig.add_subplot(111)  # add an Axes to the figure
     ax.pie(pie.values(), radius=1.2, labels=pie.keys(), autopct='%0.2f%%', shadow=True, )
     chart1 = FigureCanvasTkAgg(fig, main)
-    chart1.get_tk_widget().place(x=0, y=180)
+    chart1.get_tk_widget().place(x=0, y=170)
 
 
 def show_month_exp(day):
