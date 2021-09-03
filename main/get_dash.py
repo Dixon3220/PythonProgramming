@@ -36,10 +36,10 @@ def dashboard(userid):
     main.geometry('700x500')
 
     # Display logo
-    logo = tk.Canvas(main, height=60, width=60)  # change size of logo
+    logo = tk.Canvas(main, height=120, width=230)  # change size of logo
     image_file = tk.PhotoImage(file="normal.gif")  # change our logo here
-    image = logo.create_image(0, 0, anchor='center', image=image_file)
-    logo.place(x=50, y=70)
+    image = logo.create_image(80, 60, anchor='center', image=image_file)
+    logo.place(x=30, y=50)
 
     def get_today_data(day):
         global user_expense
