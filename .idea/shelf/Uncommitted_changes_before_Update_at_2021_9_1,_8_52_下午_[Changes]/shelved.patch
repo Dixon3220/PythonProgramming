@@ -1,0 +1,1486 @@
+Index: main/get_button_choice.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/main/get_button_choice.py b/main/get_button_choice.py
+new file mode 100644
+--- /dev/null	(date 1630488304509)
++++ b/main/get_button_choice.py	(date 1630488304509)
+@@ -0,0 +1,135 @@
++import openpyxl
++from openpyxl import Workbook
++
++def set(path, type, amount, date, userId):
++    try:
++        data = openpyxl.load_workbook(path)
++        # get the first sheet
++        sheetnames = data.get_sheet_names()
++        table = data.get_sheet_by_name(sheetnames[0])
++
++        table = data.active
++        nrows = table.max_row
++        ncolumns = table.max_column
++
++        table.cell(nrows + 1, 1).value = str(type)
++        table.cell(nrows + 1, 2).value = float(amount)
++        table.cell(nrows + 1, 3).value = str(date)
++        table.cell(nrows + 1, 4).value = str(userId)
++
++        data.save(path)
++
++    except FileNotFoundError:
++        data = Workbook()
++        table = data.active
++        table['A1']='type'
++        table['B1']='amount'
++        table['C1']='date'
++        table['D1']='userId'
++
++        table.cell(2, 1).value = str(type)
++        table.cell(2, 2).value = float(amount)
++        table.cell(2, 3).value = str(date)
++        table.cell(2, 4).value = str(userId)
++
++        data.save(path)
++
++
++
++def edit(path, origin_type, origin_amount, origin_date, type, amount, date, userId):
++    data = openpyxl.load_workbook(path)
++    # get the first sheet
++    sheetnames = data.get_sheet_names()
++    table = data.get_sheet_by_name(sheetnames[0])
++
++    table = data.active
++    nrows = table.max_row
++    ncolumns = table.max_column
++
++    for i in range(1,nrows+1):
++        if table.cell(i, 4).value == userId and table.cell(i, 1).value == origin_type and table.cell(i,2).value==origin_amount and table.cell(i,3).value==origin_date:
++
++            table.cell(i, 1).value = type
++            table.cell(i, 2).value = amount
++            table.cell(i, 3).value = date
++
++    data.save(path)
++
++def delete(path, type, amount, date, userId):
++    data = openpyxl.load_workbook(path)
++    # get the first sheet
++    sheetnames = data.get_sheet_names()
++    table = data.get_sheet_by_name(sheetnames[0])
++
++    table = data.active
++    nrows = table.max_row
++    ncolumns = table.max_column
++
++    for i in range(1, nrows + 1):
++        if table.cell(i, 4).value == userId and table.cell(i, 1).value == type and table.cell(i,2).value==amount and table.cell(i,3).value==date:
++
++            table.delete_rows(i)
++
++    data.save(path)
++
++def search(path, userId, type=None, amount=None, date=None):
++    list=[]
++    data = openpyxl.load_workbook(path)
++    # get the first sheet
++    sheetnames = data.get_sheet_names()
++    table = data.get_sheet_by_name(sheetnames[0])
++
++    table = data.active
++    nrows = table.max_row
++    ncolumns = table.max_column
++
++    if type==None and amount==None and date==None:
++        for i in range(1,nrows+1):
++            if str(table.cell(i, 4).value) == userId:
++                list.append((str(table.cell(i, 1).value),float(table.cell(i, 2).value),str(table.cell(i, 3).value)))
++
++    elif type!=None and amount==None and date==None:
++        for i in range(1, nrows + 1):
++            if str(table.cell(i, 4).value) == userId and str(table.cell(i, 1).value)==type:
++                list.append((str(table.cell(i, 1).value),float(table.cell(i, 2).value),str(table.cell(i, 3).value)))
++
++    elif type==None and amount!=None and date==None:
++        for i in range(1, nrows + 1):
++            if str(table.cell(i, 4).value) == userId and float(table.cell(i, 2).value)==amount:
++                list.append((str(table.cell(i, 1).value),float(table.cell(i, 2).value),str(table.cell(i, 3).value)))
++
++    elif type==None and amount==None and date!=None:
++        for i in range(1, nrows + 1):
++            if str(table.cell(i, 4).value) == userId and str(table.cell(i, 3).value)==date:
++                list.append((str(table.cell(i, 1).value),float(table.cell(i, 2).value),str(table.cell(i, 3).value)))
++
++    elif type!=None and amount!=None and date==None:
++        for i in range(1, nrows + 1):
++            if str(table.cell(i, 4).value) == userId and str(table.cell(i, 1).value)==type and float(table.cell(i, 2).value)==amount:
++                list.append((str(table.cell(i, 1).value),float(table.cell(i, 2).value),str(table.cell(i, 3).value)))
++
++    elif type!=None and amount==None and date!=None:
++        for i in range(1, nrows + 1):
++            if str(table.cell(i, 4).value) == userId and str(table.cell(i, 1).value)==type and str(table.cell(i, 3).value)==date:
++                list.append((str(table.cell(i, 1).value),float(table.cell(i, 2).value),str(table.cell(i, 3).value)))
++
++    elif type==None and amount!=None and date!=None:
++        for i in range(1, nrows + 1):
++            if str(table.cell(i, 4).value) == userId and float(table.cell(i, 2).value)==amount and str(table.cell(i, 3).value)==date:
++                list.append((str(table.cell(i, 1).value),float(table.cell(i, 2).value),str(table.cell(i, 3).value)))
++
++    else:
++        for i in range(1, nrows + 1):
++            if str(table.cell(i, 4).value) == userId and str(table.cell(i, 1).value)==type and float(table.cell(i, 2).value)==amount and str(table.cell(i, 3).value)==date:
++                list.append((str(table.cell(i, 1).value),float(table.cell(i, 2).value),str(table.cell(i, 3).value)))
++
++    return list
++
++#testing
++#set('budget.xlsx','food',100,'2020-1-1','ntu001')
++#set('budget.xlsx','food',50,'2020-1-20','ntu004')
++#set('budget.xlsx','food',150,'2020-3-1','ntu003')
++#edit('budget.xlsx','food',100,'2020-1-1','entertainment',200,'2021-1-1','ntu001')
++#delete('budget.xlsx','entertainment',200,'2021-1-1','ntu001')
++#print(search('budget.xlsx','ntu004'))
++
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"AutoImportSettings\">\r\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\r\n  </component>\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"ecbec057-a79a-400b-a6f5-aa05568e61e0\" name=\"Changes\" comment=\"Changes\">\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\r\n    </list>\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"FileTemplateManagerImpl\">\r\n    <option name=\"RECENT_TEMPLATES\">\r\n      <list>\r\n        <option value=\"Python Script\" />\r\n      </list>\r\n    </option>\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\r\n  </component>\r\n  <component name=\"ProjectId\" id=\"1x7UqeTzQdeIPCzDlpvIHwXTFZD\" />\r\n  <component name=\"ProjectLevelVcsManager\" settingsEditedManually=\"true\" />\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\">\r\n    <property name=\"RunOnceActivity.OpenProjectViewOnStart\" value=\"true\" />\r\n    <property name=\"RunOnceActivity.ShowReadmeOnStart\" value=\"true\" />\r\n    <property name=\"WebServerToolWindowFactoryState\" value=\"false\" />\r\n    <property name=\"com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File\" value=\"Python\" />\r\n    <property name=\"last_opened_file_path\" value=\"$PROJECT_DIR$/main menu/main.py\" />\r\n    <property name=\"node.js.detected.package.eslint\" value=\"true\" />\r\n    <property name=\"node.js.detected.package.tslint\" value=\"true\" />\r\n    <property name=\"node.js.selected.package.eslint\" value=\"(autodetect)\" />\r\n    <property name=\"node.js.selected.package.tslint\" value=\"(autodetect)\" />\r\n  </component>\r\n  <component name=\"RunManager\" selected=\"Python.pythonprogrammingproject\">\r\n    <configuration name=\"Ledger\" type=\"PythonConfigurationType\" factoryName=\"Python\" temporary=\"true\" nameIsGenerated=\"true\">\r\n      <option name=\"INTERPRETER_OPTIONS\" value=\"\" />\r\n      <option name=\"PARENT_ENVS\" value=\"true\" />\r\n      <envs>\r\n        <env name=\"PYTHONUNBUFFERED\" value=\"1\" />\r\n      </envs>\r\n      <option name=\"SDK_HOME\" value=\"C:\\Users\\sjk\\anaconda3\\python.exe\" />\r\n      <option name=\"WORKING_DIRECTORY\" value=\"$PROJECT_DIR$\" />\r\n      <option name=\"IS_MODULE_SDK\" value=\"false\" />\r\n      <option name=\"ADD_CONTENT_ROOTS\" value=\"true\" />\r\n      <option name=\"ADD_SOURCE_ROOTS\" value=\"true\" />\r\n      <module name=\"\" />\r\n      <EXTENSION ID=\"PythonCoverageRunConfigurationExtension\" runner=\"coverage.py\" />\r\n      <option name=\"SCRIPT_NAME\" value=\"$PROJECT_DIR$/Ledger.py\" />\r\n      <option name=\"PARAMETERS\" value=\"\" />\r\n      <option name=\"SHOW_COMMAND_LINE\" value=\"false\" />\r\n      <option name=\"EMULATE_TERMINAL\" value=\"false\" />\r\n      <option name=\"MODULE_MODE\" value=\"false\" />\r\n      <option name=\"REDIRECT_INPUT\" value=\"false\" />\r\n      <option name=\"INPUT_FILE\" value=\"\" />\r\n      <method v=\"2\" />\r\n    </configuration>\r\n    <configuration name=\"main\" type=\"PythonConfigurationType\" factoryName=\"Python\" temporary=\"true\" nameIsGenerated=\"true\">\r\n      <option name=\"INTERPRETER_OPTIONS\" value=\"\" />\r\n      <option name=\"PARENT_ENVS\" value=\"true\" />\r\n      <envs>\r\n        <env name=\"PYTHONUNBUFFERED\" value=\"1\" />\r\n      </envs>\r\n      <option name=\"SDK_HOME\" value=\"\" />\r\n      <option name=\"WORKING_DIRECTORY\" value=\"$PROJECT_DIR$/main menu\" />\r\n      <option name=\"IS_MODULE_SDK\" value=\"false\" />\r\n      <option name=\"ADD_CONTENT_ROOTS\" value=\"true\" />\r\n      <option name=\"ADD_SOURCE_ROOTS\" value=\"true\" />\r\n      <module name=\"\" />\r\n      <EXTENSION ID=\"PythonCoverageRunConfigurationExtension\" runner=\"coverage.py\" />\r\n      <option name=\"SCRIPT_NAME\" value=\"$PROJECT_DIR$/main menu/main.py\" />\r\n      <option name=\"PARAMETERS\" value=\"\" />\r\n      <option name=\"SHOW_COMMAND_LINE\" value=\"false\" />\r\n      <option name=\"EMULATE_TERMINAL\" value=\"false\" />\r\n      <option name=\"MODULE_MODE\" value=\"false\" />\r\n      <option name=\"REDIRECT_INPUT\" value=\"false\" />\r\n      <option name=\"INPUT_FILE\" value=\"\" />\r\n      <method v=\"2\" />\r\n    </configuration>\r\n    <configuration name=\"pythonprogrammingproject\" type=\"PythonConfigurationType\" factoryName=\"Python\" temporary=\"true\" nameIsGenerated=\"true\">\r\n      <option name=\"INTERPRETER_OPTIONS\" value=\"\" />\r\n      <option name=\"PARENT_ENVS\" value=\"true\" />\r\n      <envs>\r\n        <env name=\"PYTHONUNBUFFERED\" value=\"1\" />\r\n      </envs>\r\n      <option name=\"SDK_HOME\" value=\"D:\\Python\\Python_Programming\\project\\coding\\PythonProgramming\\main menu\\venv\\Scripts\\python.exe\" />\r\n      <option name=\"WORKING_DIRECTORY\" value=\"$PROJECT_DIR$\" />\r\n      <option name=\"IS_MODULE_SDK\" value=\"false\" />\r\n      <option name=\"ADD_CONTENT_ROOTS\" value=\"true\" />\r\n      <option name=\"ADD_SOURCE_ROOTS\" value=\"true\" />\r\n      <module name=\"\" />\r\n      <EXTENSION ID=\"PythonCoverageRunConfigurationExtension\" runner=\"coverage.py\" />\r\n      <option name=\"SCRIPT_NAME\" value=\"$PROJECT_DIR$/pythonprogrammingproject.py\" />\r\n      <option name=\"PARAMETERS\" value=\"\" />\r\n      <option name=\"SHOW_COMMAND_LINE\" value=\"false\" />\r\n      <option name=\"EMULATE_TERMINAL\" value=\"false\" />\r\n      <option name=\"MODULE_MODE\" value=\"false\" />\r\n      <option name=\"REDIRECT_INPUT\" value=\"false\" />\r\n      <option name=\"INPUT_FILE\" value=\"\" />\r\n      <method v=\"2\" />\r\n    </configuration>\r\n    <list>\r\n      <item itemvalue=\"Python.Ledger\" />\r\n      <item itemvalue=\"Python.main\" />\r\n      <item itemvalue=\"Python.pythonprogrammingproject\" />\r\n    </list>\r\n    <recent_temporary>\r\n      <list>\r\n        <item itemvalue=\"Python.main\" />\r\n        <item itemvalue=\"Python.Ledger\" />\r\n        <item itemvalue=\"Python.pythonprogrammingproject\" />\r\n      </list>\r\n    </recent_temporary>\r\n  </component>\r\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\r\n      <changelist id=\"ecbec057-a79a-400b-a6f5-aa05568e61e0\" name=\"Changes\" comment=\"\" />\r\n      <created>1629705817243</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1629705817243</updated>\r\n      <workItem from=\"1629705826038\" duration=\"1775000\" />\r\n      <workItem from=\"1629708608827\" duration=\"577000\" />\r\n      <workItem from=\"1630325193032\" duration=\"486000\" />\r\n    </task>\r\n    <servers />\r\n  </component>\r\n  <component name=\"TypeScriptGeneratedFilesManager\">\r\n    <option name=\"version\" value=\"3\" />\r\n  </component>\r\n  <component name=\"Vcs.Log.Tabs.Properties\">\r\n    <option name=\"TAB_STATES\">\r\n      <map>\r\n        <entry key=\"MAIN\">\r\n          <value>\r\n            <State />\r\n          </value>\r\n        </entry>\r\n      </map>\r\n    </option>\r\n    <option name=\"oldMeFiltersMigrated\" value=\"true\" />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision 18dc7b603d4d7470f8cdbfd78f5d7c71d92dcb41)
++++ b/.idea/workspace.xml	(date 1630500084913)
+@@ -5,6 +5,13 @@
+   </component>
+   <component name="ChangeListManager">
+     <list default="true" id="ecbec057-a79a-400b-a6f5-aa05568e61e0" name="Changes" comment="Changes">
++      <change afterPath="$PROJECT_DIR$/main/Ledger.py" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/main/Login.py" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/main/get_button_choice.py" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/main/get_dash.py" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/main/main" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/main/main.py" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/main/menu.py" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+@@ -33,27 +40,65 @@
+     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+     <property name="WebServerToolWindowFactoryState" value="false" />
+     <property name="com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File" value="Python" />
+-    <property name="last_opened_file_path" value="$PROJECT_DIR$/main menu/main.py" />
++    <property name="last_opened_file_path" value="$PROJECT_DIR$/main" />
+     <property name="node.js.detected.package.eslint" value="true" />
+     <property name="node.js.detected.package.tslint" value="true" />
+     <property name="node.js.selected.package.eslint" value="(autodetect)" />
+     <property name="node.js.selected.package.tslint" value="(autodetect)" />
+   </component>
+-  <component name="RunManager" selected="Python.pythonprogrammingproject">
+-    <configuration name="Ledger" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
++  <component name="RecentsManager">
++    <key name="CopyFile.RECENT_KEYS">
++      <recent name="$PROJECT_DIR$/main" />
++    </key>
++  </component>
++  <component name="RunManager" selected="Python.main">
++    <configuration default="true" type="DjangoTestsConfigurationType">
+       <option name="INTERPRETER_OPTIONS" value="" />
+       <option name="PARENT_ENVS" value="true" />
+       <envs>
+         <env name="PYTHONUNBUFFERED" value="1" />
+       </envs>
+-      <option name="SDK_HOME" value="C:\Users\sjk\anaconda3\python.exe" />
+-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
++      <option name="SDK_HOME" value="" />
++      <option name="WORKING_DIRECTORY" value="" />
+       <option name="IS_MODULE_SDK" value="false" />
+       <option name="ADD_CONTENT_ROOTS" value="true" />
+       <option name="ADD_SOURCE_ROOTS" value="true" />
+       <module name="" />
+       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Ledger.py" />
++      <option name="TARGET" value="" />
++      <option name="SETTINGS_FILE" value="" />
++      <option name="CUSTOM_SETTINGS" value="false" />
++      <option name="USE_OPTIONS" value="false" />
++      <option name="OPTIONS" value="" />
++      <method v="2" />
++    </configuration>
++    <configuration default="true" type="PyBehaveRunConfigurationType" factoryName="Behave">
++      <option name="INTERPRETER_OPTIONS" value="" />
++      <option name="PARENT_ENVS" value="true" />
++      <option name="SDK_HOME" value="" />
++      <option name="WORKING_DIRECTORY" value="" />
++      <option name="IS_MODULE_SDK" value="true" />
++      <option name="ADD_CONTENT_ROOTS" value="true" />
++      <option name="ADD_SOURCE_ROOTS" value="true" />
++      <module name="" />
++      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
++      <option name="ADDITIONAL_ARGS" value="" />
++      <method v="2" />
++    </configuration>
++    <configuration name="Ledger" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
++      <option name="INTERPRETER_OPTIONS" value="" />
++      <option name="PARENT_ENVS" value="true" />
++      <envs>
++        <env name="PYTHONUNBUFFERED" value="1" />
++      </envs>
++      <option name="SDK_HOME" value="$USER_HOME$/miniforge3/bin/python3.9" />
++      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/main" />
++      <option name="IS_MODULE_SDK" value="false" />
++      <option name="ADD_CONTENT_ROOTS" value="true" />
++      <option name="ADD_SOURCE_ROOTS" value="true" />
++      <module name="" />
++      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
++      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main/Ledger.py" />
+       <option name="PARAMETERS" value="" />
+       <option name="SHOW_COMMAND_LINE" value="false" />
+       <option name="EMULATE_TERMINAL" value="false" />
+@@ -62,20 +107,86 @@
+       <option name="INPUT_FILE" value="" />
+       <method v="2" />
+     </configuration>
+-    <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
++    <configuration name="Login" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
++      <option name="INTERPRETER_OPTIONS" value="" />
++      <option name="PARENT_ENVS" value="true" />
++      <envs>
++        <env name="PYTHONUNBUFFERED" value="1" />
++      </envs>
++      <option name="SDK_HOME" value="$USER_HOME$/miniforge3/bin/python3.9" />
++      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/main" />
++      <option name="IS_MODULE_SDK" value="false" />
++      <option name="ADD_CONTENT_ROOTS" value="true" />
++      <option name="ADD_SOURCE_ROOTS" value="true" />
++      <module name="" />
++      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
++      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main/Login.py" />
++      <option name="PARAMETERS" value="" />
++      <option name="SHOW_COMMAND_LINE" value="false" />
++      <option name="EMULATE_TERMINAL" value="false" />
++      <option name="MODULE_MODE" value="false" />
++      <option name="REDIRECT_INPUT" value="false" />
++      <option name="INPUT_FILE" value="" />
++      <method v="2" />
++    </configuration>
++    <configuration default="true" type="PythonConfigurationType" factoryName="Python">
+       <option name="INTERPRETER_OPTIONS" value="" />
+       <option name="PARENT_ENVS" value="true" />
+       <envs>
+         <env name="PYTHONUNBUFFERED" value="1" />
+       </envs>
+       <option name="SDK_HOME" value="" />
+-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/main menu" />
++      <option name="WORKING_DIRECTORY" value="" />
++      <option name="IS_MODULE_SDK" value="false" />
++      <option name="ADD_CONTENT_ROOTS" value="true" />
++      <option name="ADD_SOURCE_ROOTS" value="true" />
++      <module name="" />
++      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
++      <option name="SCRIPT_NAME" value="" />
++      <option name="PARAMETERS" value="" />
++      <option name="SHOW_COMMAND_LINE" value="false" />
++      <option name="EMULATE_TERMINAL" value="false" />
++      <option name="MODULE_MODE" value="false" />
++      <option name="REDIRECT_INPUT" value="false" />
++      <option name="INPUT_FILE" value="" />
++      <method v="2" />
++    </configuration>
++    <configuration name="get_button_choice" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
++      <option name="INTERPRETER_OPTIONS" value="" />
++      <option name="PARENT_ENVS" value="true" />
++      <envs>
++        <env name="PYTHONUNBUFFERED" value="1" />
++      </envs>
++      <option name="SDK_HOME" value="$USER_HOME$/miniforge3/bin/python3.9" />
++      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/main" />
++      <option name="IS_MODULE_SDK" value="false" />
++      <option name="ADD_CONTENT_ROOTS" value="true" />
++      <option name="ADD_SOURCE_ROOTS" value="true" />
++      <module name="" />
++      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
++      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main/get_button_choice.py" />
++      <option name="PARAMETERS" value="" />
++      <option name="SHOW_COMMAND_LINE" value="false" />
++      <option name="EMULATE_TERMINAL" value="false" />
++      <option name="MODULE_MODE" value="false" />
++      <option name="REDIRECT_INPUT" value="false" />
++      <option name="INPUT_FILE" value="" />
++      <method v="2" />
++    </configuration>
++    <configuration name="get_dash" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
++      <option name="INTERPRETER_OPTIONS" value="" />
++      <option name="PARENT_ENVS" value="true" />
++      <envs>
++        <env name="PYTHONUNBUFFERED" value="1" />
++      </envs>
++      <option name="SDK_HOME" value="$USER_HOME$/miniforge3/bin/python3.9" />
++      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/main" />
+       <option name="IS_MODULE_SDK" value="false" />
+       <option name="ADD_CONTENT_ROOTS" value="true" />
+       <option name="ADD_SOURCE_ROOTS" value="true" />
+       <module name="" />
+       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main menu/main.py" />
++      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main/get_dash.py" />
+       <option name="PARAMETERS" value="" />
+       <option name="SHOW_COMMAND_LINE" value="false" />
+       <option name="EMULATE_TERMINAL" value="false" />
+@@ -84,20 +195,20 @@
+       <option name="INPUT_FILE" value="" />
+       <method v="2" />
+     </configuration>
+-    <configuration name="pythonprogrammingproject" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
++    <configuration name="main" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+       <option name="INTERPRETER_OPTIONS" value="" />
+       <option name="PARENT_ENVS" value="true" />
+       <envs>
+         <env name="PYTHONUNBUFFERED" value="1" />
+       </envs>
+-      <option name="SDK_HOME" value="D:\Python\Python_Programming\project\coding\PythonProgramming\main menu\venv\Scripts\python.exe" />
+-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
++      <option name="SDK_HOME" value="$USER_HOME$/miniforge3/bin/python3.9" />
++      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/main" />
+       <option name="IS_MODULE_SDK" value="false" />
+       <option name="ADD_CONTENT_ROOTS" value="true" />
+       <option name="ADD_SOURCE_ROOTS" value="true" />
+       <module name="" />
+       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/pythonprogrammingproject.py" />
++      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main/main.py" />
+       <option name="PARAMETERS" value="" />
+       <option name="SHOW_COMMAND_LINE" value="false" />
+       <option name="EMULATE_TERMINAL" value="false" />
+@@ -106,16 +217,116 @@
+       <option name="INPUT_FILE" value="" />
+       <method v="2" />
+     </configuration>
++    <configuration name="menu" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
++      <option name="INTERPRETER_OPTIONS" value="" />
++      <option name="PARENT_ENVS" value="true" />
++      <envs>
++        <env name="PYTHONUNBUFFERED" value="1" />
++      </envs>
++      <option name="SDK_HOME" value="$USER_HOME$/miniforge3/bin/python3.9" />
++      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/main" />
++      <option name="IS_MODULE_SDK" value="false" />
++      <option name="ADD_CONTENT_ROOTS" value="true" />
++      <option name="ADD_SOURCE_ROOTS" value="true" />
++      <module name="" />
++      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
++      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main/menu.py" />
++      <option name="PARAMETERS" value="" />
++      <option name="SHOW_COMMAND_LINE" value="false" />
++      <option name="EMULATE_TERMINAL" value="false" />
++      <option name="MODULE_MODE" value="false" />
++      <option name="REDIRECT_INPUT" value="false" />
++      <option name="INPUT_FILE" value="" />
++      <method v="2" />
++    </configuration>
++    <configuration default="true" type="Python.FlaskServer">
++      <option name="INTERPRETER_OPTIONS" value="" />
++      <option name="PARENT_ENVS" value="true" />
++      <option name="SDK_HOME" value="" />
++      <option name="WORKING_DIRECTORY" value="" />
++      <option name="IS_MODULE_SDK" value="false" />
++      <option name="ADD_CONTENT_ROOTS" value="true" />
++      <option name="ADD_SOURCE_ROOTS" value="true" />
++      <module name="" />
++      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
++      <option name="launchJavascriptDebuger" value="false" />
++      <method v="2" />
++    </configuration>
++    <configuration default="true" type="Tox" factoryName="Tox">
++      <option name="INTERPRETER_OPTIONS" value="" />
++      <option name="PARENT_ENVS" value="true" />
++      <option name="SDK_HOME" value="" />
++      <option name="WORKING_DIRECTORY" value="" />
++      <option name="IS_MODULE_SDK" value="false" />
++      <option name="ADD_CONTENT_ROOTS" value="true" />
++      <option name="ADD_SOURCE_ROOTS" value="true" />
++      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
++      <method v="2" />
++    </configuration>
++    <configuration default="true" type="docs" factoryName="Docutils task">
++      <option name="INTERPRETER_OPTIONS" value="" />
++      <option name="PARENT_ENVS" value="true" />
++      <option name="SDK_HOME" value="" />
++      <option name="WORKING_DIRECTORY" value="" />
++      <option name="IS_MODULE_SDK" value="false" />
++      <option name="ADD_CONTENT_ROOTS" value="true" />
++      <option name="ADD_SOURCE_ROOTS" value="true" />
++      <module name="" />
++      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
++      <option name="docutils_input_file" value="" />
++      <option name="docutils_output_file" value="" />
++      <option name="docutils_params" value="" />
++      <option name="docutils_task" value="" />
++      <option name="docutils_open_in_browser" value="false" />
++      <method v="2" />
++    </configuration>
++    <configuration default="true" type="docs" factoryName="Sphinx task">
++      <option name="INTERPRETER_OPTIONS" value="" />
++      <option name="PARENT_ENVS" value="true" />
++      <option name="SDK_HOME" value="" />
++      <option name="WORKING_DIRECTORY" value="" />
++      <option name="IS_MODULE_SDK" value="false" />
++      <option name="ADD_CONTENT_ROOTS" value="true" />
++      <option name="ADD_SOURCE_ROOTS" value="true" />
++      <module name="" />
++      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
++      <option name="docutils_input_file" value="" />
++      <option name="docutils_output_file" value="" />
++      <option name="docutils_params" value="" />
++      <option name="docutils_task" value="" />
++      <option name="docutils_open_in_browser" value="false" />
++      <method v="2" />
++    </configuration>
++    <configuration default="true" type="tests" factoryName="Doctests">
++      <option name="INTERPRETER_OPTIONS" value="" />
++      <option name="PARENT_ENVS" value="true" />
++      <option name="SDK_HOME" value="" />
++      <option name="WORKING_DIRECTORY" value="" />
++      <option name="IS_MODULE_SDK" value="false" />
++      <option name="ADD_CONTENT_ROOTS" value="true" />
++      <option name="ADD_SOURCE_ROOTS" value="true" />
++      <module name="" />
++      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
++      <option name="SCRIPT_NAME" value="" />
++      <option name="CLASS_NAME" value="" />
++      <option name="METHOD_NAME" value="" />
++      <option name="FOLDER_NAME" value="" />
++      <option name="TEST_TYPE" value="TEST_SCRIPT" />
++      <option name="PATTERN" value="" />
++      <option name="USE_PATTERN" value="false" />
++      <method v="2" />
++    </configuration>
+     <list>
++      <item itemvalue="Python.get_button_choice" />
++      <item itemvalue="Python.get_dash" />
+       <item itemvalue="Python.Ledger" />
++      <item itemvalue="Python.Login" />
+       <item itemvalue="Python.main" />
+-      <item itemvalue="Python.pythonprogrammingproject" />
++      <item itemvalue="Python.menu" />
+     </list>
+     <recent_temporary>
+       <list>
+         <item itemvalue="Python.main" />
+-        <item itemvalue="Python.Ledger" />
+-        <item itemvalue="Python.pythonprogrammingproject" />
+       </list>
+     </recent_temporary>
+   </component>
+@@ -148,4 +359,12 @@
+     </option>
+     <option name="oldMeFiltersMigrated" value="true" />
+   </component>
++  <component name="com.intellij.coverage.CoverageDataManagerImpl">
++    <SUITE FILE_PATH="coverage/PythonProgramming$main_test.coverage" NAME="main_test Coverage Results" MODIFIED="1630250625013" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/main" />
++    <SUITE FILE_PATH="coverage/PythonProgramming$main_py.coverage" NAME="main.py Coverage Results" MODIFIED="1630487871243" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/main menu" />
++    <SUITE FILE_PATH="coverage/PythonProgramming$pythonprogrammingproject.coverage" NAME="pythonprogrammingproject Coverage Results" MODIFIED="1630247083224" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/origin" />
++    <SUITE FILE_PATH="coverage/PythonProgramming$Login.coverage" NAME="Login Coverage Results" MODIFIED="1630499675157" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/main" />
++    <SUITE FILE_PATH="coverage/PythonProgramming$main.coverage" NAME="main Coverage Results" MODIFIED="1630499776218" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/main" />
++    <SUITE FILE_PATH="coverage/PythonProgramming$Ledger.coverage" NAME="Ledger Coverage Results" MODIFIED="1630488951208" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/origin" />
++  </component>
+ </project>
+\ No newline at end of file
+Index: main/main.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/main/main.py b/main/main.py
+new file mode 100644
+--- /dev/null	(date 1630500673797)
++++ b/main/main.py	(date 1630500673797)
+@@ -0,0 +1,241 @@
++import tkinter as tk
++import tkinter.messagebox
++import pickle
++
++def admin_check():
++    with open('usrs_info.pickle', 'rb') as file:
++        model = pickle.load(file)
++
++    window_admin = tk.Tk()
++    window_admin.geometry('400x300')
++    window_admin.title('Administration Window')
++
++    account_list = tkinter.Listbox(window_admin)
++    account_list.pack()
++
++    account_list.insert(tkinter.END, '| USERNAME: PASSWORD |')
++    for item in model.keys():
++        account_list.insert(tkinter.END, item + ': ' + model[item])
++
++class LoginPage(object):
++    def __init__(self, master=None):
++        self.root = master
++        self.root.title('Python Expenses Recorder')
++        self.root.geometry('500x300')
++        self.var_usr_name = tk.StringVar()
++        self.var_usr_pwd = tk.StringVar()
++        self.createPage()
++
++    def createPage(self):
++        self.page = tk.Frame(self.root)
++        self.page.pack()
++        tk.Label(self.page, text='\n\nWelcome to Python Expenses Recorder!\n').pack()
++        tk.Label(self.page, text='Username').pack()
++        tk.Entry(self.page, textvariable=self.var_usr_name, font=('Arial', 14)).pack()
++        tk.Label(self.page, text='Password').pack()
++        tk.Entry(self.page, textvariable=self.var_usr_pwd, font=('Arial', 14), show='*').pack()
++        tk.Button(self.page, text='Login', command=self.usr_login).pack()
++        tk.Button(self.page, text='Sign up', command=self.usr_sign_up_b).pack()
++        tk.Button(self.page, text='Reset Password', command=self.usr_reset_pwd_b).pack()
++
++    def usr_login(self):
++        usr_name = self.var_usr_name.get()
++        usr_pwd = self.var_usr_pwd.get()
++
++        # delete the space in the tail and head of use_name
++        while usr_name[-1] == ' ':
++            usr_name = usr_name[:-1]
++        while usr_name[0] == ' ':
++            usr_name = usr_name[1:]
++
++        try:
++            with open('usrs_info.pickle', 'rb') as usr_file:
++                usrs_info = pickle.load(usr_file)
++        except FileNotFoundError:
++
++            # if cannot find the user, creat a file with a Admin 'python'
++            with open('usrs_info.pickle', 'wb') as usr_file:
++                usrs_info = {'admin': '12345'}
++                pickle.dump(usrs_info, usr_file)
++                usr_file.close()
++
++        if usr_name == 'admin':
++            if usr_pwd == '12345':
++                is_check_info = tkinter.messagebox.askyesno('Administration Page',
++                                                            'Hi, admin. Would you like to check all user\'s information?')
++                if is_check_info:
++                    admin_check()
++            else:
++                tkinter.messagebox.showerror('Error',
++                                             'Sorry, Admin. Your password is wrong, try again.')
++        else:
++            # See whether the username match in the file
++            if usr_name in usrs_info:
++
++                if usr_pwd == usrs_info[usr_name]:
++                    tkinter.messagebox.showinfo(message='Welcome ! ' + usr_name)
++                # if username match while password wrong
++                else:
++                    tkinter.messagebox.showerror(message='Error, your password is wrong, try again.')
++
++            else:  # if cannot find the username in file
++                is_sign_up = tkinter.messagebox.askyesno('Hi there', 'You have not sign up yet. Please sign up')
++                # ask for sign up
++                if is_sign_up:
++                    self.page.destroy()
++                    SignupPage(self.root)
++
++    def usr_sign_up_b(self):
++        self.page.destroy()
++        SignupPage(self.root)
++
++    def usr_reset_pwd_b(self):
++        self.page.destroy()
++        #ResetPage(self.root)
++
++class SignupPage(object):
++    def __init__(self, master=None):
++        self.root = master
++        self.root.title('Sign Up')
++        self.root.geometry('500x300')
++        self.new_name = tk.StringVar()
++        self.new_pwd = tk.StringVar()
++        self.new_pwd_confirm = tk.StringVar()
++        self.createPage()
++
++    def createPage(self):
++        self.page = tk.Frame(self.root)
++        self.page.pack()
++        tk.Label(self.page, text='Username').pack()
++        tk.Entry(self.page, textvariable=self.new_name).pack()
++        tk.Label(self.page, text='Password').pack()
++        tk.Entry(self.page, textvariable=self.new_pwd, show='*').pack()
++        tk.Label(self.page, text='Confirm Password').pack()
++        tk.Entry(self.page, textvariable=self.new_pwd_confirm, show='*').pack()
++        tk.Button(self.page, text='Sign up', command=self.sign_to_python).pack()
++
++    def sign_to_python(self):
++        np = self.new_pwd.get()
++        npf = self.new_pwd_confirm.get()
++        nn = self.new_name.get()
++
++        # delete the space in the tail and head of nn
++        while nn[-1] == ' ':
++            nn = nn[:-1]
++        while nn[0] == ' ':
++            nn = nn[1:]
++
++        try:
++            with open('usrs_info.pickle', 'rb') as usr_file:
++                exist_usr_info = pickle.load(usr_file)
++        except FileNotFoundError:
++            # if cannot find the user, creat a file with a Admin 'python'
++            with open('usrs_info.pickle', 'wb') as usr_file:
++                usrs_info = {'python': 'python'}
++                pickle.dump(usrs_info, usr_file)
++                usr_file.close()
++
++                # If username already exit in the file
++        if nn in exist_usr_info:
++            is_reset_pwd = tkinter.messagebox.showerror('Hi there',
++                                                        'Sorry. This username have been taken, please change.')
++        elif np != npf:
++            tkinter.messagebox.showerror('Error',
++                                         'Password and confirm password must be the same!')
++        else:
++            if len(nn) > 15:
++                tkinter.messagebox.showerror('Error', 'Username must be less than 15 characters!')
++            elif len(nn) < 1:
++                tkinter.messagebox.showerror('Error', 'Please enter a username.')
++            else:
++                if len(np) > 15:
++                    tkinter.messagebox.showerror('Error', 'Password must be less than 15 characters!')
++                elif len(np) < 3:
++                    tkinter.messagebox.showerror('Error', 'Password must be more than 3 characters')
++                else:
++                    exist_usr_info[nn] = np
++                    with open('usrs_info.pickle', 'wb') as usr_file:
++                        pickle.dump(exist_usr_info, usr_file)
++                        tkinter.messagebox.showinfo('Welcome', 'You have successfully signed up!')
++                        self.page.destroy()
++                        LoginPage(self.root)
++
++class ResetPage(object):
++    def __init__(self, master=None):
++        self.root = master
++        self.root.title('Reset Password')
++        self.root.geometry('500x300')
++        self.usr_name1 = tk.StringVar()
++        self.old_pwd = tk.StringVar()
++        self.new_pwd = tk.StringVar()
++        self.new_pwd_confirm = tk.StringVar()
++        self.new_pwd_confirm = tk.StringVar()
++        self.createPage()
++
++    def createPage(self):
++        self.page = tk.Frame(self.root)
++        self.page.pack()
++        tk.Label(self.page, text='Username').pack()
++        tk.Entry(self.page, textvariable=self.usr_name1).pack()
++        tk.Label(self.page, text='Old Password').pack()
++        tk.Entry(self.page, textvariable=self.old_pwd, show='*').pack()
++        tk.Label(self.page, text='New Password').pack()
++        tk.Entry(self.page, textvariable=self.new_pwd, show='*').pack()
++        tk.Label(self.page, text='Confirm Password').pack()
++        tk.Entry(self.page, textvariable=self.new_pwd_confirm, show='*').pack()
++        tk.Button(self.page, text='Reset', command=self.reset_pwd_python).pack()
++
++    def reset_pwd_python(self):
++        un = self.usr_name1.get()
++        op = self.old_pwd.get()
++        np = self.new_pwd.get()
++        npc = self.new_pwd_confirm.get()
++
++        # delete the space in the tail and head of un
++        while un[-1] == ' ':
++            un = un[:-1]
++        while un[0] == ' ':
++            un = un[1:]
++
++        try:
++            with open('usrs_info.pickle', 'rb') as usr_file:
++                exist_usr_info = pickle.load(usr_file)
++        except FileNotFoundError:
++            # if cannot find the user, creat a file with a Admin 'python'
++            is_sign_up1 = tkinter.messagebox.askyesno('Error', 'You didn\'t sign up before, would you like to sign up?')
++            if is_sign_up1:
++                self.page.destroy()
++                SignupPage(root.self)
++
++        # If username already exit in the file
++        if un in exist_usr_info:
++            if op == exist_usr_info[un]:
++                if np == npc:
++                    if op == np:
++                        tkinter.messagebox.showerror('Error', 'New password and old password cannot be the same!')
++                    else:
++                        if len(np) > 15:
++                            tkinter.messagebox.showerror('Error', 'Password must be less than 15 characters!')
++                        elif len(np) < 3:
++                            tkinter.messagebox.showerror('Error', 'Password must be more than 3 characters')
++                        else:
++                            exist_usr_info[un] = np
++                            with open('usrs_info.pickle', 'wb') as usr_file:
++                                pickle.dump(exist_usr_info, usr_file)
++                                tkinter.messagebox.showinfo('Thank you', 'You have successfully reset the password!')
++                                self.page.destroy()
++                                LoginPage(root.self)
++                else:
++                    tkinter.messagebox.showerror('Error', 'New password and confirm password must be the same!')
++            else:
++                tkinter.messagebox.showerror('Error', 'The old password is wrong')
++        else:
++            is_sign_up2 = tkinter.messagebox.askyesno('Error',
++                                                      'The username you enter did\'n sign up before, would you like to sign up?')
++            if is_sign_up2:
++                self.page.destroy()
++                SignupPage(root.self)
++
++root = tk.Tk()
++LoginPage(root)
++root.mainloop()
+\ No newline at end of file
+Index: main/Ledger.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/main/Ledger.py b/main/Ledger.py
+new file mode 100644
+--- /dev/null	(date 1630204073739)
++++ b/main/Ledger.py	(date 1630204073739)
+@@ -0,0 +1,66 @@
++import openpyxl
++from openpyxl import Workbook
++import datetime
++from tkinter import messagebox
++from tkinter import *
++import os
++
++
++jzr = Tk()
++
++
++jzr.title('Ledger')
++jzr.geometry('300x120+700+300')
++label1 = Label(jzr, text='Types of consumption:', font=('Microsoft Yahei', 10), fg='green')
++label1.grid(row=0, column=0)
++label2 = Label(jzr, text='Consumption amount:', font=('Microsoft Yahei', 10), fg='green')
++label2.grid(row=1, column=0)
++Entry1 = Entry(jzr, font=('Microsoft Yahei', 12), width=16)
++Entry1.grid(row=0, column=1)
++Entry2 = Entry(jzr, font=('Microsoft Yahei', 12), width=16)
++Entry2.grid(row=1, column=1)
++
++
++def jzcx():
++    con1 = Entry1.get()
++    con1 = con1.strip()
++    con2 = Entry2.get()
++    con2 = con2.strip()
++    if con1 == '':
++        messagebox.showinfo('Prompt', message='Please enter the consumption type')
++    elif con2 == '':
++        messagebox.showinfo('Prompt', message='Please enter the consumption amount')
++    else:
++        if os.path.exists('Ledger.xlsx'):
++            filepath = 'Ledger.xlsx'
++            zb = openpyxl.load_workbook(filepath)
++            xf = zb.active
++            a = datetime.datetime.now()
++            b = Entry1.get()
++            c = Entry2.get()
++            xf.append([a, b, c])
++            xf.column_dimensions['A'].width = 20
++            zb.save('Ledger.xlsx')
++            messagebox.showinfo('Prompt', message='Consumption data has been recorded')
++            jzr.quit()
++        else:
++            zb = openpyxl.Workbook()
++            xf = zb.active
++            xf['A1'] = 'Date'
++            xf['B1'] = 'Types of consumption'
++            xf['C1'] = 'Consumption amount'
++            a = datetime.datetime.now()
++            b = Entry1.get()
++            c = Entry2.get()
++            xf.append([a, b, c])
++            xf.column_dimensions['A'].width = 20
++            zb.save('Ledger.xlsx')
++            messagebox.showinfo('Prompt', message='Consumption data has been recorded')
++            jzr.quit()
++
++
++Button1 = Button(jzr, text='Record data', font=('Microsoft Yahei', 10), width=12, command=jzcx)
++Button1.grid(row=3, column=0, sticky=W)
++Button2 = Button(jzr, text='Exit', font=('Microsoft Yahei', 10), width=8, command=jzr.quit)
++Button2.grid(row=3, column=1, sticky=E)
++jzr.mainloop()
+\ No newline at end of file
+Index: main/Login.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/main/Login.py b/main/Login.py
+new file mode 100644
+--- /dev/null	(date 1630488305647)
++++ b/main/Login.py	(date 1630488305647)
+@@ -0,0 +1,263 @@
++import tkinter as tk
++import tkinter.messagebox
++import pickle
++
++
++def admin_check():
++    with open('usrs_info.pickle', 'rb') as file:
++        model = pickle.load(file)
++    
++    window_admin = tk.Toplevel(window)
++    window_admin.geometry('400x300')
++    window_admin.title('Administration Window')
++    
++    account_list=tkinter.Listbox(window_admin)
++    account_list.pack()
++    
++    account_list.insert(tkinter.END, '| USERNAME: PASSWORD |')
++    for  item  in model.keys(): 
++        account_list.insert(tkinter.END,item+': '+model[item])
++           
++
++def usr_login():
++    usr_name = var_usr_name.get()
++    usr_pwd = var_usr_pwd.get() 
++    
++    # delete the space in the tail and head of use_name
++    while usr_name[-1] == ' ':
++        usr_name = usr_name[:-1]
++    while usr_name[0] ==' ':
++        usr_name = usr_name[1:]
++    
++    try:
++        with open('usrs_info.pickle', 'rb') as usr_file:
++            usrs_info = pickle.load(usr_file)
++    except FileNotFoundError:
++
++        # if cannot find the user, creat a file with a Admin 'python'
++        with open('usrs_info.pickle', 'wb') as usr_file:
++            usrs_info = {'admin': '12345'}
++            pickle.dump(usrs_info, usr_file)
++            usr_file.close()  
++
++    if usr_name == 'admin':
++        if usr_pwd == '12345': 
++            is_check_info = tkinter.messagebox.askyesno('Administration Page',
++                        'Hi, admin. Would you like to check all user\'s information?')
++            if is_check_info:
++                admin_check()
++        else: tkinter.messagebox.showerror('Error', 
++                                         'Sorry, Admin. Your password is wrong, try again.')
++    else:
++        # See whether the username match in the file    
++        if usr_name in usrs_info:
++
++            if usr_pwd == usrs_info[usr_name]:
++                tkinter.messagebox.showinfo(message='Welcome ! ' + usr_name)
++            # if username match while password wrong
++            else:
++                tkinter.messagebox.showerror(message='Error, your password is wrong, try again.')
++
++        else:  # if cannot find the username in file 
++            is_sign_up = tkinter.messagebox.askyesno('Hi there', 'You have not sign up yet. Please sign up')
++            # ask for sign up
++            if is_sign_up:
++                usr_sign_up()
++
++
++
++# Sign up
++def usr_sign_up():
++    
++    def sign_to_python():
++        np = new_pwd.get()
++        npf = new_pwd_confirm.get()
++        nn = new_name.get()
++        
++        # delete the space in the tail and head of nn
++        while nn[-1] == ' ':
++            nn = nn[:-1]
++        while nn[0] == ' ':
++            nn = nn[1:]
++
++        try:
++            with open('usrs_info.pickle', 'rb') as usr_file:
++                exist_usr_info = pickle.load(usr_file)
++        except FileNotFoundError:
++            # if cannot find the user, creat a file with a Admin 'python'
++            with open('usrs_info.pickle', 'wb') as usr_file:
++                usrs_info = {'python': 'python'}
++                pickle.dump(usrs_info, usr_file)
++                usr_file.close()  
++        
++        # If username already exit in the file 
++        if nn in exist_usr_info:
++            is_reset_pwd = tkinter.messagebox.showerror('Hi there', 
++                                                        'Sorry. This username have been taken, please change.')
++        elif np != npf:
++            tkinter.messagebox.showerror('Error', 
++                                         'Password and confirm password must be the same!')
++        else:
++            if len(nn) > 15:
++                    tkinter.messagebox.showerror('Error', 'Username must be less than 15 characters!')
++            elif len(nn) < 1:
++                    tkinter.messagebox.showerror('Error', 'Please enter a username.')
++            else:       
++                if len(np) > 15:
++                    tkinter.messagebox.showerror('Error', 'Password must be less than 15 characters!')
++                elif len(np) < 3:
++                    tkinter.messagebox.showerror('Error', 'Password must be more than 3 characters')
++                else:
++                    exist_usr_info[nn] = np
++                    with open('usrs_info.pickle', 'wb') as usr_file:
++                        pickle.dump(exist_usr_info, usr_file)
++                        tkinter.messagebox.showinfo('Welcome', 'You have successfully signed up!')
++                        window_sign_up.destroy()
++
++    window_sign_up = tk.Toplevel(window)
++    window_sign_up.geometry('400x300')
++    window_sign_up.title('Sign Up Window')
++ 
++    new_name = tk.StringVar() 
++    usr_sign = tk.Label(window_sign_up, text='Username')
++    usr_sign.pack()
++    entry_new_name = tk.Entry(window_sign_up, textvariable=new_name)
++    entry_new_name.pack()
++ 
++    new_pwd = tk.StringVar()
++    pwd_sign = tk.Label(window_sign_up, text='Password')
++    pwd_sign.pack()
++    entry_usr_pwd = tk.Entry(window_sign_up, textvariable=new_pwd, show='*')
++    entry_usr_pwd.pack()
++ 
++    new_pwd_confirm = tk.StringVar()
++    confirm_sign = tk.Label(window_sign_up, text='Confirm Password')
++    confirm_sign.pack()
++    entry_usr_pwd_confirm = tk.Entry(window_sign_up, textvariable=new_pwd_confirm, show='*')
++    entry_usr_pwd_confirm.pack()
++ 
++    btn_confirm_sign_up = tk.Button(window_sign_up, text='Sign up', command=sign_to_python)
++    btn_confirm_sign_up.pack()
++
++    
++def usr_reset_pwd():
++        
++    def reset_pwd_python():
++        un = usr_name1.get()
++        op = old_pwd.get()
++        np = new_pwd.get()
++        npc = new_pwd_confirm.get()
++        
++        # delete the space in the tail and head of un
++        while un[-1] == ' ':
++            un = un[:-1]
++        while un[0] == ' ':
++            un = un[1:]
++
++        try:
++            with open('usrs_info.pickle', 'rb') as usr_file:
++                exist_usr_info = pickle.load(usr_file)
++        except FileNotFoundError:
++            # if cannot find the user, creat a file with a Admin 'python'
++            is_sign_up1 = tkinter.messagebox.askyesno('Error', 'You didn\'t sign up before, would you like to sign up?')
++            if is_sign_up1:
++                window_re_pwd.destroy()
++                usr_sign_up()
++    
++        # If username already exit in the file 
++        if un in exist_usr_info:
++            if op == exist_usr_info[un]:
++                if np == npc:
++                    if op == np:
++                        tkinter.messagebox.showerror('Error', 'New password and old password cannot be the same!')
++                    else:
++                        if len(np) > 15:
++                            tkinter.messagebox.showerror('Error', 'Password must be less than 15 characters!')
++                        elif len(np) < 3:
++                            tkinter.messagebox.showerror('Error', 'Password must be more than 3 characters')
++                        else:
++                            exist_usr_info[un] = np
++                            with open('usrs_info.pickle', 'wb') as usr_file:
++                                pickle.dump(exist_usr_info, usr_file)
++                                tkinter.messagebox.showinfo('Thank you', 'You have successfully reset the password!')
++                                window_re_pwd.destroy()
++                else:
++                    tkinter.messagebox.showerror('Error', 'New password and confirm password must be the same!')
++            else:
++                tkinter.messagebox.showerror('Error', 'The old password is wrong')
++        else: 
++            is_sign_up2 = tkinter.messagebox.askyesno('Error', 'The username you enter did\'n sign up before, would you like to sign up?')
++            if is_sign_up2:
++                window_re_pwd.destroy()
++                usr_sign_up()
++                
++    window_re_pwd = tk.Toplevel(window)
++    window_re_pwd.geometry('400x300')
++    window_re_pwd.title('Reset Password Window')
++ 
++    usr_name1 = tk.StringVar() 
++    usr_name_label = tk.Label(window_re_pwd, text='Username')
++    usr_name_label.pack()
++    entry_name = tk.Entry(window_re_pwd, textvariable=usr_name1)
++    entry_name.pack()
++ 
++    old_pwd = tk.StringVar()
++    old_pwd_enter = tk.Label(window_re_pwd, text='Old Password')
++    old_pwd_enter.pack()
++    entry_usr_pwd = tk.Entry(window_re_pwd, textvariable=old_pwd, show='*')
++    entry_usr_pwd.pack()
++    
++    new_pwd = tk.StringVar()
++    new_pwd_label = tk.Label(window_re_pwd, text='New Password')
++    new_pwd_label.pack()
++    entry_usr_new_pwd = tk.Entry(window_re_pwd, textvariable=new_pwd, show='*')
++    entry_usr_new_pwd.pack()
++ 
++    new_pwd_confirm = tk.StringVar()
++    confirm_new_psw_label = tk.Label(window_re_pwd, text='Confirm Password')
++    confirm_new_psw_label.pack()
++    entry_usr_pwd_confirm = tk.Entry(window_re_pwd, textvariable=new_pwd_confirm, show='*')
++    entry_usr_pwd_confirm.pack()
++ 
++    btn_confirm_sign_up = tk.Button(window_re_pwd, text='Reset', command=reset_pwd_python)
++    btn_confirm_sign_up.pack()
++    
++
++# Seting Window
++window = tk.Tk()
++window.title('Python Expenses Recorder')
++window.geometry('500x300')  
++
++welcome_lable = tk.Label(window, text='\n\nWelcome to Python Expenses Recorder!\n')
++welcome_lable.pack()
++
++    
++# Uesername label
++usr_lable = tk.Label(window, text='Username')
++var_usr_name = tk.StringVar()
++entry_usr_name = tk.Entry(window, 
++                          textvariable=var_usr_name, font=('Arial', 14))
++usr_lable.pack()
++entry_usr_name.pack()
++
++
++# Password label
++pwd_lable = tk.Label(window, text='Password')
++var_usr_pwd = tk.StringVar()
++entry_usr_pwd = tk.Entry(window, 
++                         textvariable=var_usr_pwd, font=('Arial', 14), show='*')
++pwd_lable.pack()
++entry_usr_pwd.pack() 
++
++
++# login and sign up button
++btn_login = tk.Button(window, text='Login', command=usr_login)
++btn_login.pack()
++btn_sign_up = tk.Button(window, text='Sign up', command=usr_sign_up)
++btn_sign_up.pack()
++
++# Reset Password buttom
++btn_re_pwd = tk.Button(window, text='Reset Password', command=usr_reset_pwd)
++btn_re_pwd.pack()
++
++window.mainloop()
+\ No newline at end of file
+Index: main/menu.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/main/menu.py b/main/menu.py
+new file mode 100644
+--- /dev/null	(date 1630488305646)
++++ b/main/menu.py	(date 1630488305646)
+@@ -0,0 +1,196 @@
++import tkinter as tk
++import tkinter.messagebox
++from tkinter import ttk
++import pickle
++from datetime import date
++import matplotlib.pyplot as plt
++from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
++from matplotlib.figure import Figure
++from pandas import DataFrame
++
++
++#main menu
++main = tk.Tk()
++main.title('Main Menu')
++main.geometry('700x500')
++
++#Textbox1 to diaplay information
++textbox1 = tk.Text(main, height = 7, width = 30)
++textbox1.place(x=200, y=30)
++
++#Textbox2 to display information
++textbox2 = tk.Text(main, height = 7, width = 30)
++textbox2.place(x=450, y=30)
++    
++#Display today's date
++today = date.today()
++today_date = tk.Label(main,text= 'Today: '+ str(today),font= ("Arial",13))
++today_date.place(x=10,y=20)
++
++#Display logo
++logo = tk.Canvas(main, height=70,width=70) #change size of logo
++image_file = tk.PhotoImage(file='normal.gif') #change our logo here
++image = logo.create_image(0,0, anchor='nw',image=image_file)
++logo.place(x=50,y=50)
++
++
++#Plot bar charts
++data1 = {'Country': ['US','CA','GER','UK','FR'], #data example
++         'GDP_Per_Capita': [45000,42000,52000,49000,47000]
++        }
++df1 = DataFrame(data1,columns=['Country','GDP_Per_Capita']) #data example
++
++figure1 = plt.Figure(figsize=(4.5,3), dpi=80)
++ax1 = figure1.add_subplot(111)
++bar1 = FigureCanvasTkAgg(figure1, main)
++bar1.get_tk_widget().place(x=330,y=180)
++df1 = df1[['Country','GDP_Per_Capita']].groupby('Country').sum()
++df1.plot(kind='bar', legend=True, ax=ax1)
++ax1.set_title('Country Vs. GDP Per Capita')
++
++
++
++#plot pie charts
++stockListExp = ['AMZN' , 'AAPL', 'JETS', 'CCL', 'NCLH'] #testing data
++stockSplitExp = [15,25,40,10,10] 
++
++fig = Figure(figsize=(3,2.4)) # create a figure object
++ax = fig.add_subplot(111) # add an Axes to the figure
++
++ax.pie(stockSplitExp, radius=1.2, labels=stockListExp,autopct='%0.2f%%', shadow=True,)
++
++chart1 = FigureCanvasTkAgg(fig,main)
++chart1.get_tk_widget().place(x=0,y=180)
++
++
++
++
++#Change budget interface
++def change_budget():
++
++    def change_success():
++        
++        c_window = tk.Toplevel(budget_window)
++        c_window.title('Success')
++        c_window.geometry('150x150')
++        change_label = tk.Label(c_window, text='Success!',font=('Arial', 15)).pack()
++        btn_main = tk.Button(c_window, text='Main',width= 10,command= budget_window.destroy)
++        btn_main.place(x= 30, y= 50)       
++
++
++
++    budget_window = tk.Toplevel(main)
++    budget_window.title('Change Budget')
++    budget_window.geometry('500x300')
++
++    new_budget = tk.IntVar() 
++    budget_title = tk.Label(budget_window, text='Change Your Budget', font=('Arial', 15))
++    budget_title.place(x= 160, y =80)
++    budget_label = tk.Label(budget_window, text='Budget: ')
++    budget_label.place(x= 150, y =120)
++    budegte_entry = tk.Entry(budget_window, textvariable=new_budget)
++    budegte_entry.place(x= 200, y =120)
++
++    #Confirm & back button
++    btn_confirm_budget = tk.Button(budget_window, text='Confirm',width= 13,command=change_success)
++    btn_confirm_budget.place(x=220, y =150)
++    btn_back = tk.Button(budget_window, text='Back',width= 13,command = budget_window.destroy)
++    btn_back.place(x=20,y=20)
++
++
++
++
++# Add new expenses
++def add_expenses():
++    
++    
++    def addexp_success():
++        
++        s_window = tk.Toplevel(add_window)
++        s_window.title('Success')
++        s_window.geometry('250x150')
++        success_label = tk.Label(s_window, text='Success!',font=('Arial', 15)).pack()
++        btn_main = tk.Button(s_window, text='Main',width= 10,command= add_window.destroy)
++        btn_main.place(x= 40, y =75)
++        btn_addmore = tk.Button(s_window, text='Add More',width= 10,command= s_window.destroy)
++        btn_addmore.place(x=140,y=75)
++
++                
++
++    add_window = tk.Toplevel(main)
++    add_window.title('Add Expenses')
++    add_window.geometry('500x300')
++
++    #Title 
++    add_title = tk.Label(add_window, text='Add New Expense', font=('Arial', 15))
++    add_title.place(x= 170, y =50)
++
++    #new date
++    new_date = tk.StringVar()     
++    date_label = tk.Label(add_window, text='Date: ')
++    date_label.place(x= 130, y =120)
++    date_entry = tk.Entry(add_window, textvariable=new_date)
++    date_entry.place(x= 180, y =120)
++
++    #new amount
++    amount = tk.IntVar()     
++    amount_label = tk.Label(add_window, text='Amount: ')
++    amount_label.place(x= 120, y =150)
++    amount_entry = tk.Entry(add_window, textvariable= amount)
++    amount_entry.place(x= 180, y =150)
++
++    #Type
++    add_type = tk.StringVar()
++    types = ttk.Combobox(add_window, width= 18, textvariable = add_type)
++    types['values'] = ('Food', 'Entertainment', 'Rent','Transportation','Others')
++    types.place(x= 180, y =180)
++    type_label = tk.Label(add_window, text='Type: ')
++    type_label.place(x= 130, y =180)
++    
++
++    #Confirm & back button
++    btn_add = tk.Button(add_window, text='Add',width= 13,command= addexp_success)
++    btn_add.place(x=200, y =230)
++    btn_back = tk.Button(add_window, text='Back',width= 13,command= add_window.destroy)
++    btn_back.place(x=20,y=20)
++    
++
++
++
++
++#Log out Function
++def logout():
++    msgBox =tk.messagebox.askquestion("Log out", "Do you wish to Log out?")
++    if msgBox == 'yes':
++        tk.messagebox.showinfo("Thank you", "See you Again!")
++        main.destroy()
++
++
++#optionlist
++option_list = ['Week','Month','Year']
++value_inside1 = tk.StringVar()
++date_menu1 = tk.OptionMenu(main, value_inside1,*option_list)
++date_menu1.place(x=500, y =140)
++value_inside2 = tk.StringVar()
++date_menu2 = tk.OptionMenu(main, value_inside2,*option_list)
++date_menu2.place(x=600, y = 140)
++
++
++
++
++
++#All the functions buttons
++logout_button = tk.Button(main,text="Log out",width= 13,command = logout) #add command for the function
++logout_button.place(x=550, y=450)
++
++change_button = tk.Button(main,text="Change Budget",width= 13, command =change_budget)
++change_button.place(x=400, y=450)
++
++detail_button = tk.Button(main,text="Details",width= 13)
++detail_button.place(x=250, y=450)
++
++add_button = tk.Button(main,text="Add",width= 13,command = add_expenses)
++add_button.place(x=100, y=450)
++main.mainloop()
++
++
+Index: main/get_dash.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/main/get_dash.py b/main/get_dash.py
+new file mode 100644
+--- /dev/null	(date 1630488304510)
++++ b/main/get_dash.py	(date 1630488304510)
+@@ -0,0 +1,176 @@
++import tkinter as tk
++import tkinter.messagebox
++import pickle
++from datetime import date
++import matplotlib.pyplot as plt
++from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
++import pandas as pd
++from pandas import DataFrame
++
++
++def get_info(userid):
++    # read excel
++    expense = pd.read_excel('expense.xlsx')  # [ignore this comment, only for testing] expense = pd.read_excel('D:\Python\Python_Programming\project\coding\PythonProgramming\get_dash\expense.xlsx')
++    budget  = pd.read_excel('budget.xlsx')   # [ignore this comment, only for testing]  budget = pd.read_excel('D:\Python\Python_Programming\project\coding\PythonProgramming\get_dash\\budget.xlsx')
++    # get this user's expense and budget
++    user_expense = expense[(expense['userId'] == userid)].drop(['userId'], axis=1, inplace=False)
++    user_budget  = budget [(budget ['userId'] == userid)].drop(['userId'], axis=1, inplace=False)
++    return user_expense, user_budget
++
++
++def get_today_data(user_expense, day):
++    # get user's expense on this day
++    today_data = user_expense[(user_expense['date'] == str(day))]
++    return today_data
++
++
++def get_month_data(user_expense, day):
++    # get user's expense in this month
++    year, month = day.split('-')[0], day.split('-')[1]
++    index = [int(str(x).split('-')[1]) == int(month) for x in user_expense['date'] if int(str(x).split('-')[0]) == int(year)]
++    month_data = user_expense[index]
++    return month_data
++
++
++def get_year_data(user_expense, day):
++    # get user's expense in this year
++    year= day.split('-')[0]
++    index = [int(str(x).split('-')[0]) == int(year) for x in user_expense['date']]
++    year_data = user_expense[index]
++    return year_data
++
++
++def get_plot_data(User_expense, day, flag):
++    # get data for the pie chart
++    # flag = 'day' means getting data for this day, flag = 'month' means getting data for month containing this day
++    if flag == 'day':
++        user_expense = get_today_data(User_expense, day)
++    else:
++        user_expense = get_month_data(User_expense, day)
++    type_all = user_expense['type']
++    type_name = type_all[type_all.duplicated(keep='first') == False]
++    pie = {}
++    for key in type_name:
++        user_expense_type = user_expense[(user_expense['type'] == str(key))]
++        pie[key] = sum([float(amount) for amount in user_expense_type['amount']])
++
++    # get data for the bar chart
++    # flag = 'day' means getting bar chart data for this month, flag = 'month' means getting data for this year
++    if flag == 'day':
++        user_expense = get_month_data(User_expense, day)
++        thedate = user_expense['date']
++        date_name = thedate[thedate.duplicated(keep='first') == False]
++        bar = {}
++        for key1 in date_name:
++            user_expense_day = user_expense[(user_expense['date'] == str(key1))]
++            bar[key1] = sum([float(amount) for amount in user_expense_day['amount']])
++    else:
++        user_expense = get_year_data(User_expense, day)
++        month_name = {1:'Jan', 2:'Feb', 3:'Mar', 4:'Apr', 5:'May', 6:'Jun', 7:'Jul', 8:'Aug', 9:'Sep', 10:'Sep', 11:'Nov', 12:'Dec'}
++        bar = {}
++        for thismonth in range(12):
++            index = [int(str(x).split('-')[1]) == thismonth for x in user_expense['date']]
++            if not True in index:
++                bar[month_name[thismonth]] = 0
++            else:
++                user_expense_month = user_expense[index]
++                bar[month_name[thismonth]] = sum([float(amount) for amount in user_expense_month['amount']])
++
++    return pie, bar
++
++def show_date(main, today):
++    # Textbox1
++    textbox1 = tk.Text(main, height=7, width=30)
++    # textbox1.insert()
++    textbox1.place(x=200, y=30)
++
++    # Textbox2
++    textbox2 = tk.Text(main, height=7, width=30)
++    # textbox2.insert()
++    textbox2.place(x=450, y=30)
++
++    # Display today's date
++    today_date = tk.Label(main, text='Today: ' + str(today), font=("Arial", 13))
++    today_date.place(x=10, y=20)
++
++    # Display logo
++    logo = tk.Canvas(main, height=70, width=70) #change size of logo
++    image_file = tk.PhotoImage(file='normal.gif') #change our logo here
++    image = logo.create_image(0, 0, anchor='nw', image=image_file)
++    logo.place(x=50, y=50)
++
++    # all the functions buttons
++    logout_button = tk.Button(main, text="Log out", width=13)  # add command for the function
++    logout_button.place(x=550, y=450)
++
++    change_button = tk.Button(main, text="Change Budget", width=13)
++    change_button.place(x=400, y=450)
++
++    detail_button = tk.Button(main, text="Details", width=13)
++    detail_button.place(x=250, y=450)
++
++    add_button = tk.Button(main, text="Add", width=13)
++    add_button.place(x=100, y=450)
++
++
++def show_today_exp(main, user_expense, day):
++    # Plot bar charts
++    pie, bar = get_plot_data(user_expense, day, 'day')
++    bar_keys = [x for x in bar.keys()]
++    bar_values = [y for y in bar.values()]
++
++    data1 = {'Date': bar_keys,
++             'Expense': bar_values
++             }
++    df1 = DataFrame(data1, columns=['Date', 'Expense'])
++    figure1 = plt.Figure(figsize=(5, 3), dpi=80)
++    ax1 = figure1.add_subplot(111)
++    bar1 = FigureCanvasTkAgg(figure1, main)
++    bar1.get_tk_widget().place(x=300, y=180)
++    df1 = df1[['Date', 'Expense']].groupby('Date').sum()
++    df1.plot(kind='bar', legend=True, ax=ax1)
++    ax1.set_title('Date Vs. Expense')
++
++
++def show_month_exp(main, user_expense, day):
++    # Plot bar charts
++    pie, bar = get_plot_data(user_expense, day, 'month')
++    bar_keys = [x for x in bar.keys()]
++    bar_values = [y for y in bar.values()]
++
++    data1 = {'Date': bar_keys,
++             'Expense': bar_values
++             }
++    df1 = DataFrame(data1, columns=['Months', 'Expense'])
++    figure1 = plt.Figure(figsize=(5, 3), dpi=80)
++    ax1 = figure1.add_subplot(111)
++    bar1 = FigureCanvasTkAgg(figure1, main)
++    bar1.get_tk_widget().place(x=300, y=180)
++    df1 = df1[['Months', 'Expense']].groupby('Months').sum()
++    df1 = df1[bar_keys].groupby('Months').sum()
++    df1.plot(kind='bar', legend=True, ax=ax1)
++    ax1.set_title('Months Vs. Expense')
++
++
++def main():
++    # get information from the user, this could be changed in main, especially for month.
++    today = date.today()
++    today = '2021-08-30'               # testing value
++    month = str(today).split('-')[1]
++    userid = 'Dixon3220'
++
++    # get the data required
++    user_expense, user_budget = get_info(userid)
++
++    # need some output if userid is not in excel or user_expense is empty, better read as an independent function!!!
++
++    # main menu
++    main = tk.Tk()
++    main.title('Main Menu')
++    main.geometry('700x500')
++    show_date(main, str(today))
++    show_today_exp(main, user_expense, str(today))
++    main.mainloop()
++
++if __name__ == "__main__":
++    main()
+\ No newline at end of file
