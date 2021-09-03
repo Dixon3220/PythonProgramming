@@ -13,6 +13,13 @@ from pandas import DataFrame
 main = tk.Tk()
 main.title('Main Menu')
 main.geometry('700x500')
+
+# Display logo
+logo = tk.Canvas(main, height=60, width=60)  # change size of logo
+image_file = tk.PhotoImage(file="normal.gif")  # change our logo here
+image = logo.create_image(0, 0, anchor='center', image=image_file)
+logo.place(x=50, y=70)
+
 # read excel
 expense = pd.read_excel(
     'expense.xlsx')  # [ignore this comment, only for testing] expense = pd.read_excel('D:\Python\Python_Programming\project\coding\PythonProgramming\get_dash\expense.xlsx')
@@ -108,12 +115,6 @@ def get_plot_data(day, flag):
 
 
 def show():
-    # Display logo
-    logo = tk.Canvas(main, height=60, width=60)  # change size of logo
-    image_file = tk.PhotoImage(file="normal.gif")  # change our logo here
-    image = logo.create_image(0, 0, anchor='center', image=image_file)
-    logo.place(x=50, y=70)
-
     # Textbox2 title
     month_names = {1: 'January', 2: 'February', 3: 'March', 4: 'April', 5: 'May', 6: 'June', 7: 'July', 8: 'August', \
                    9: 'September', 10: 'September', 11: 'November', 12: 'December'}
