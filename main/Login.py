@@ -8,7 +8,7 @@ def admin_check():
         model = pickle.load(file)
     
     window_admin = tk.Toplevel(window)
-    window_admin.geometry('400x300')
+    window_admin.geometry('600x600')
     window_admin.title('Administration Window')
     
     account_list=tkinter.Listbox(window_admin)

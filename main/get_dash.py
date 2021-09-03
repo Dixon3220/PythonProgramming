@@ -19,8 +19,8 @@ def dashboard(userid):
     global user_expense
     global user_budget
 
-    expense = pd.read_excel('/Users/chenshi/Documents/GitHub/PythonProgramming/main/expense.xlsx')  # [ignore this comment, only for testing] expense = pd.read_excel('D:\Python\Python_Programming\project\coding\PythonProgramming\get_dash\expense.xlsx')
-    budget = pd.read_excel('/Users/chenshi/Documents/GitHub/PythonProgramming/main/budget.xlsx')  # [ignore this comment, only for testing]  budget = pd.read_excel('D:\Python\Python_Programming\project\coding\PythonProgramming\get_dash\\budget.xlsx')
+    expense = pd.read_excel('expense.xlsx')  # [ignore this comment, only for testing] expense = pd.read_excel('D:\Python\Python_Programming\project\coding\PythonProgramming\get_dash\expense.xlsx')
+    budget = pd.read_excel('budget.xlsx')  # [ignore this comment, only for testing]  budget = pd.read_excel('D:\Python\Python_Programming\project\coding\PythonProgramming\get_dash\\budget.xlsx')
 
     # get information from the user, this could be changed in main, especially for month.
     #today = date.today()
@@ -34,6 +34,12 @@ def dashboard(userid):
     main = tk.Tk()
     main.title('Python Expenses Recorder')
     main.geometry('700x500')
+
+    # Display logo
+    logo = tk.Canvas(main, height=60, width=60)  # change size of logo
+    image_file = tk.PhotoImage(file="normal.gif")  # change our logo here
+    image = logo.create_image(0, 0, anchor='center', image=image_file)
+    logo.place(x=50, y=70)
 
     def get_today_data(day):
         global user_expense
@@ -49,7 +55,7 @@ def dashboard(userid):
 
         # get user's expense in this month
         year, month = day.split('-')[0], day.split('-')[1]
-        index = [int(str(x).split('-')[1]) == int(month) for x in user_expense['date'] if
+        index = [int(str(x).split('-')[1]) == int(month) for x in user_expense['date'] if\
                  int(str(x).split('-')[0]) == int(year)]
         month_data = user_expense[index]
         return month_data
@@ -109,12 +115,6 @@ def dashboard(userid):
         return pie, bar
 
     def show():
-        # Display logo
-        logo = tk.Canvas(main, height=60, width=60)  # change size of logo
-        image_file = tk.PhotoImage(file="normal.gif")  # change our logo here
-        image = logo.create_image(0, 0, anchor='center', image=image_file)
-        logo.place(x=50, y=70)
-
         # Textbox2 title
         month_names = {1: 'January', 2: 'February', 3: 'March', 4: 'April', 5: 'May', 6: 'June', 7: 'July', 8: 'August', \
                        9: 'September', 10: 'September', 11: 'November', 12: 'December'}
@@ -269,9 +269,6 @@ def dashboard(userid):
         pie, bar = get_plot_data(day, 'month')
         bar_keys = [x for x in bar.keys()]
         bar_values = [y for y in bar.values()]
-
-        # block_label = tk.Label(main, text="                                                           ", font=('Arial', 13))
-        # block_label.place(x=250, y=400)
 
         data1 = {'Months': bar_keys,
                  'Expense': bar_values
