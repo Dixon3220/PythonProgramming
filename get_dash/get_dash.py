@@ -111,7 +111,7 @@ def show():
     # Display logo
     logo = tk.Canvas(main, height=60, width=60)  # change size of logo
     image_file = tk.PhotoImage(file="normal.gif")  # change our logo here
-    image = logo.create_image(0, 0, anchor='nw', image=image_file)
+    image = logo.create_image(0, 0, anchor='center', image=image_file)
     logo.place(x=50, y=70)
 
     # Textbox2 title
@@ -167,8 +167,8 @@ def show_detail():
     # get data
     today_data = get_today_data(today)
     today_total = sum([float(x) for x in today_data['amount']])
-    today_budget = 100  # need to update
-    month_budget = 100  # need to update
+    month_budget = float(user_budget['budget'])
+    today_budget = float(int(user_budget['budget'] / 30))
     month_names = {1: 'January', 2: 'February', 3: 'March', 4: 'April', 5: 'May', 6: 'June', 7: 'July', 8: 'August', \
                    9: 'September', 10: 'September', 11: 'November', 12: 'December'}
     month_data = get_month_data(today)
@@ -250,14 +250,15 @@ def show_today_exp(day):
     df1.plot(kind='bar', legend=True, ax=ax1)
     for i, v in enumerate(df1['Expense']):
         ax1.text(i, v // 2, str(v), ha='center')
-    ax1.axhline(50, linestyle='--', color='red')
-    ax1.set_xticklabels(data1['Date'], rotation=360)
+    ax1.axhline(int(user_budget['budget']/30), linestyle='--', color='red')
+    data_bar1 = [x.split('-')[1] + '-' + x.split('-')[2] for x in data1['Date']]
+    ax1.set_xticklabels(data_bar1, rotation=360)
     ax1.set_title('Date Vs. Expense')
 
     # Plot pie charts
     fig = Figure(figsize=(3, 2.7))  # create a figure object
     ax = fig.add_subplot(111)  # add an Axes to the figure
-    ax.pie(pie.values(), radius=1.0, labels=pie.keys(), autopct='%0.2f%%', shadow=True, )
+    ax.pie(pie.values(), radius=0.8, labels=pie.keys(), autopct='%0.2f%%', shadow=True, )
     chart1 = FigureCanvasTkAgg(fig, main)
     chart1.get_tk_widget().place(x=0, y=170)
 
@@ -271,24 +272,32 @@ def show_month_exp(day):
     bar_keys = [x for x in bar.keys()]
     bar_values = [y for y in bar.values()]
 
+    #block_label = tk.Label(main, text="                                                           ", font=('Arial', 13))
+    #block_label.place(x=250, y=400)
+
     data1 = {'Months': bar_keys,
              'Expense': bar_values
              }
     df1 = DataFrame(data1, columns=['Months', 'Expense'])
-    figure1 = plt.Figure(figsize=(5, 3), dpi=80)
+    figure1 = plt.Figure(figsize=(5, 3.4), dpi=80)
     ax1 = figure1.add_subplot(111)
     bar1 = FigureCanvasTkAgg(figure1, main)
-    bar1.get_tk_widget().place(x=300, y=180)
+    bar1.get_tk_widget().place(x=300, y=170)
     df1 = df1[['Months', 'Expense']].groupby('Months').sum()
     df1.plot(kind='bar', legend=True, ax=ax1)
+    df1_expense = [int(y) for y in df1['Expense']]
+    for i, v in enumerate(df1_expense):
+        ax1.text(i, v // 2, str(v), ha='center')
+    ax1.axhline(int(user_budget['budget']), linestyle='--', color='red')
+    ax1.set_xticklabels(data1['Months'], rotation=360)
     ax1.set_title('Months Vs. Expense')
 
     # Plot pie charts
-    fig = Figure(figsize=(3, 2.4))  # create a figure object
+    fig = Figure(figsize=(3, 2.7))  # create a figure object
     ax = fig.add_subplot(111)  # add an Axes to the figure
-    ax.pie(pie.values(), radius=1.0, labels=pie.keys(), autopct='%0.2f%%', shadow=True, )
+    ax.pie(pie.values(), radius=0.8, labels=pie.keys(), autopct='%0.2f%%', shadow=True, )
     chart1 = FigureCanvasTkAgg(fig, main)
-    chart1.get_tk_widget().place(x=0, y=180)
+    chart1.get_tk_widget().place(x=0, y=170)
 
 
 # Change budget interface
@@ -296,15 +305,25 @@ def change_budget():
     global user_expense
     global user_budget
 
-    def change_success():
+    def change_success(new_budget):
         global user_expense
         global user_budget
+        global budget
+
+        budget.loc[(budget['userId'] == userid), 'budget'] = new_budget
+        user_budget = budget[(budget['userId'] == userid)].drop(['userId'], axis=1, inplace=False)
+        budget.to_excel('budget.xlsx')
+        user_budget.to_excel('user_budget.xlsx')
+
         c_window = tk.Toplevel(budget_window)
         c_window.title('Success')
         c_window.geometry('150x150')
         change_label = tk.Label(c_window, text='Success!', font=('Arial', 15)).pack()
         btn_main = tk.Button(c_window, text='Main', width=10, command=budget_window.destroy)
         btn_main.place(x=30, y=50)
+
+        show_detail()
+        show_today_exp(today)
 
     budget_window = tk.Toplevel(main)
     budget_window.title('Change Budget')
@@ -319,7 +338,8 @@ def change_budget():
     budegte_entry.place(x=200, y=120)
 
     # Confirm & back button
-    btn_confirm_budget = tk.Button(budget_window, text='Confirm', width=13, command=change_success)
+    btn_confirm_budget = tk.Button(budget_window, text='Confirm', width=13, command=lambda:\
+                                                                                    change_success(new_budget.get()))
     btn_confirm_budget.place(x=220, y=150)
     btn_back = tk.Button(budget_window, text='Back', width=13, command=budget_window.destroy)
     btn_back.place(x=20, y=20)
