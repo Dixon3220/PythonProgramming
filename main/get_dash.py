@@ -479,9 +479,11 @@ def dashboard(userid):
 
             user_expense = user_expense.append({'type': type, 'amount': amount, 'date': date}, ignore_index=True)
             user_expense['date'] = user_expense['date'].map(lambda x: str(x).split(' ')[0])
+            user_expense = user_expense[['type', 'amount', 'date']]
             expense = expense.append({'type': type, 'amount': amount, 'date': date, 'userId': userid},
                                      ignore_index=True)
             expense['date'] = expense['date'].map(lambda x: str(x).split(' ')[0])
+            expense = expense[['type', 'amount', 'date', 'userId']]
             user_expense.to_excel('user_expense.xlsx')
             expense.to_excel('expense.xlsx')
 

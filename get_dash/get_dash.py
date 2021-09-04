@@ -273,9 +273,6 @@ def show_month_exp(day):
     bar_keys = [x for x in bar.keys()]
     bar_values = [y for y in bar.values()]
 
-    #block_label = tk.Label(main, text="                                                           ", font=('Arial', 13))
-    #block_label.place(x=250, y=400)
-
     data1 = {'Months': bar_keys,
              'Expense': bar_values
              }
@@ -487,8 +484,10 @@ def add_expenses():
 
         user_expense = user_expense.append({'type': type, 'amount': amount, 'date': date}, ignore_index=True)
         user_expense['date'] = user_expense['date'].map(lambda x: str(x).split(' ')[0])
+        user_expense = user_expense[['type', 'amount', 'date']]
         expense = expense.append({'type': type, 'amount': amount, 'date': date, 'userId': userid}, ignore_index=True)
         expense['date'] = expense['date'].map(lambda x: str(x).split(' ')[0])
+        expense = expense[['type', 'amount', 'date', 'userId']]
         user_expense.to_excel('user_expense.xlsx')
         expense.to_excel('expense.xlsx')
 
