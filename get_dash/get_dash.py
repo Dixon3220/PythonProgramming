@@ -335,9 +335,20 @@ def change_budget():
     budegte_entry = tk.Entry(budget_window, textvariable=new_budget)
     budegte_entry.place(x=200, y=120)
 
+    def check_budget_valid():
+        try:
+            new_budget.get()
+        except:
+            c_window = tk.Toplevel(budget_window)
+            c_window.title('Warning')
+            c_window.geometry('500x150')
+            success_label = tk.Label(c_window, text='Please enter the budget as a number!', font=('Arial', 15)).pack()
+            btn_re_enter = tk.Button(c_window, text='Re-enter', width=10, command=c_window.destroy)
+            btn_re_enter.place(x=200,y=75)
+
     # Confirm & back button
-    btn_confirm_budget = tk.Button(budget_window, text='Confirm', width=13, command=lambda:\
-                                                                                    change_success(new_budget.get()))
+    btn_confirm_budget = tk.Button(budget_window, text='Confirm', width=13, command=lambda:[check_budget_valid(),
+                                                                                    change_success(new_budget.get())])
     btn_confirm_budget.place(x=220, y=150)
     btn_back = tk.Button(budget_window, text='Back', width=13, command=budget_window.destroy)
     btn_back.place(x=20, y=20)
