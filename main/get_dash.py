@@ -9,7 +9,15 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 from pandas import DataFrame
+from new_user import *
 
+def check_new(userid):
+    budget = pd.read_excel('/Users/chenshi/Documents/GitHub/PythonProgramming/main/budget.xlsx')
+    user_budget = budget[(budget['userId'] == userid)].drop(['userId'], axis=1, inplace=False)
+    if user_budget.empty:
+        return True
+    else:
+        return False
 
 def dashboard(userid):
     global expense
@@ -19,8 +27,8 @@ def dashboard(userid):
     global user_expense
     global user_budget
 
-    expense = pd.read_excel('expense.xlsx')  # [ignore this comment, only for testing] expense = pd.read_excel('D:\Python\Python_Programming\project\coding\PythonProgramming\get_dash\expense.xlsx')
-    budget = pd.read_excel('budget.xlsx')  # [ignore this comment, only for testing]  budget = pd.read_excel('D:\Python\Python_Programming\project\coding\PythonProgramming\get_dash\\budget.xlsx')
+    expense = pd.read_excel('/Users/chenshi/Documents/GitHub/PythonProgramming/main/expense.xlsx')  # [ignore this comment, only for testing] expense = pd.read_excel('D:\Python\Python_Programming\project\coding\PythonProgramming\get_dash\expense.xlsx')
+    budget = pd.read_excel('/Users/chenshi/Documents/GitHub/PythonProgramming/main/budget.xlsx')  # [ignore this comment, only for testing]  budget = pd.read_excel('D:\Python\Python_Programming\project\coding\PythonProgramming\get_dash\\budget.xlsx')
 
     # get information from the user, this could be changed in main, especially for month.
     #today = date.today()
@@ -55,7 +63,7 @@ def dashboard(userid):
 
         # get user's expense in this month
         year, month = day.split('-')[0], day.split('-')[1]
-        index = [int(str(x).split('-')[1]) == int(month) for x in user_expense['date'] if\
+        index = [int(str(x).split('-')[1]) == int(month) for x in user_expense['date'] if
                  int(str(x).split('-')[0]) == int(year)]
         month_data = user_expense[index]
         return month_data
@@ -269,6 +277,9 @@ def dashboard(userid):
         pie, bar = get_plot_data(day, 'month')
         bar_keys = [x for x in bar.keys()]
         bar_values = [y for y in bar.values()]
+
+        # block_label = tk.Label(main, text="                                                           ", font=('Arial', 13))
+        # block_label.place(x=250, y=400)
 
         data1 = {'Months': bar_keys,
                  'Expense': bar_values
@@ -545,8 +556,6 @@ def dashboard(userid):
         if msgBox == 'yes':
             tk.messagebox.showinfo("Thank you", "See you Again!")
             main.destroy()
-
     show()
     main.mainloop()
 
-#dashboard('Dixon3220')
