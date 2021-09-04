@@ -30,7 +30,7 @@ class LoginPage(object):
     def __init__(self, master=None):
         self.root = master
         self.root.title('Python Expenses Recorder')
-        self.root.geometry('500x400')
+        self.root.geometry('700x500')
         self.root.configure(bg='aliceblue')
         self.var_usr_name = tk.StringVar()
         self.var_usr_pwd = tk.StringVar()
@@ -125,7 +125,7 @@ class SignupPage(object):
     def __init__(self, master=None):
         self.root = master
         self.root.title('Python Expenses Recorder')
-        self.root.geometry('500x400')
+        self.root.geometry('700x500')
         self.root.configure(bg='aliceblue')
         self.new_name = tk.StringVar()
         self.new_pwd = tk.StringVar()
@@ -209,7 +209,7 @@ class ResetPage(object):
     def __init__(self, master=None):
         self.root = master
         self.root.title('Python Expenses Recorder')
-        self.root.geometry('500x400')
+        self.root.geometry('700x500')
         self.root.configure(bg='aliceblue')
         self.usr_name1 = tk.StringVar()
         self.old_pwd = tk.StringVar()
