@@ -12,7 +12,7 @@ from pandas import DataFrame
 from new_user import *
 
 def check_new(userid):
-    budget = pd.read_excel('/Users/chenshi/Documents/GitHub/PythonProgramming/main/budget.xlsx')
+    budget = pd.read_excel('budget.xlsx')
     user_budget = budget[(budget['userId'] == userid)].drop(['userId'], axis=1, inplace=False)
     if user_budget.empty:
         return True
@@ -27,17 +27,17 @@ def dashboard(userid):
     global user_expense
     global user_budget
 
-    expense = pd.read_excel('/Users/chenshi/Documents/GitHub/PythonProgramming/main/expense.xlsx')  # [ignore this comment, only for testing] expense = pd.read_excel('D:\Python\Python_Programming\project\coding\PythonProgramming\get_dash\expense.xlsx')
-    budget = pd.read_excel('/Users/chenshi/Documents/GitHub/PythonProgramming/main/budget.xlsx')  # [ignore this comment, only for testing]  budget = pd.read_excel('D:\Python\Python_Programming\project\coding\PythonProgramming\get_dash\\budget.xlsx')
-
-    # get information from the user, this could be changed in main, especially for month.
-    #today = date.today()
-    today = '2021-08-30'  # testing value
-    month = str(today).split('-')[1]
+    # read data
+    expense = pd.read_excel('expense.xlsx')
+    budget = pd.read_excel('budget.xlsx')
 
     # get the data required
     user_expense = expense[(expense['userId'] == userid)].drop(['userId'], axis=1, inplace=False)
     user_budget = budget[(budget['userId'] == userid)].drop(['userId'], axis=1, inplace=False)
+
+    # get information from the user, this could be changed in main, especially for month.
+    today = list(user_expense['date'])[0]  # testing value
+    month = str(today).split('-')[1]
 
     main = tk.Tk()
     main.title('Python Expenses Recorder')
@@ -63,8 +63,8 @@ def dashboard(userid):
 
         # get user's expense in this month
         year, month = day.split('-')[0], day.split('-')[1]
-        index = [int(str(x).split('-')[1]) == int(month) for x in user_expense['date'] if
-                 int(str(x).split('-')[0]) == int(year)]
+        index = [int(str(x).split('-')[1]) == int(month) and int(str(x).split('-')[0]) == int(year)\
+                 for x in user_expense['date']]
         month_data = user_expense[index]
         return month_data
 
@@ -262,6 +262,13 @@ def dashboard(userid):
         ax1.set_xticklabels(data_bar1, rotation=360)
         ax1.set_title('Date Vs. Expense')
 
+        if not today in list(user_expense['date']):
+            pie = {}
+            pie['No Expense'] = 1
+        if sum(pie.values()) == 0:
+            pie = {}
+            pie['No Expense'] = 1
+
         # Plot pie charts
         fig = Figure(figsize=(3, 2.7))  # create a figure object
         ax = fig.add_subplot(111)  # add an Axes to the figure
@@ -277,9 +284,6 @@ def dashboard(userid):
         pie, bar = get_plot_data(day, 'month')
         bar_keys = [x for x in bar.keys()]
         bar_values = [y for y in bar.values()]
-
-        # block_label = tk.Label(main, text="                                                           ", font=('Arial', 13))
-        # block_label.place(x=250, y=400)
 
         data1 = {'Months': bar_keys,
                  'Expense': bar_values
@@ -298,6 +302,13 @@ def dashboard(userid):
         ax1.set_xticklabels(data1['Months'], rotation=360)
         ax1.set_title('Months Vs. Expense')
 
+        if pie == {}:
+            pie = {}
+            pie['No Expense'] = 1
+        if sum(pie.values()) == 0:
+            pie = {}
+            pie['No Expense'] = 1
+
         # Plot pie charts
         fig = Figure(figsize=(3, 2.7))  # create a figure object
         ax = fig.add_subplot(111)  # add an Axes to the figure
@@ -315,26 +326,37 @@ def dashboard(userid):
             global user_budget
             global budget
 
-            budget.loc[(budget['userId'] == userid), 'budget'] = new_budget
-            user_budget = budget[(budget['userId'] == userid)].drop(['userId'], axis=1, inplace=False)
-            budget.to_excel('budget.xlsx')
-            user_budget.to_excel('user_budget.xlsx')
+            try:
+                budget.loc[(budget['userId'] == userid), 'budget'] = new_budget
+                user_budget = budget[(budget['userId'] == userid)].drop(['userId'], axis=1, inplace=False)
+                budget.to_excel('budget.xlsx')
+                user_budget.to_excel('user_budget.xlsx')
 
-            c_window = tk.Toplevel(budget_window)
-            c_window.title('Success')
-            c_window.geometry('150x150')
-            change_label = tk.Label(c_window, text='Success!', font=('Arial', 15)).pack()
-            btn_main = tk.Button(c_window, text='Main', width=10, command=budget_window.destroy)
-            btn_main.place(x=30, y=50)
+                show_detail()
+                show_today_exp(today)
 
-            show_detail()
-            show_today_exp(today)
+            except:
+                c_window = tk.Toplevel(budget_window)
+                c_window.title('Error')
+                c_window.geometry('250x150')
+                change_label = tk.Label(c_window, text='Wrong Input Format', font=('Arial', 15)).pack()
+                btn_main = tk.Button(c_window, text='Input Again', width=10, command=c_window.destroy)
+                btn_main.place(x=90, y=75)
+
+            else:
+                c_window = tk.Toplevel(budget_window)
+                c_window.title('Success')
+                c_window.geometry('250x150')
+                change_label = tk.Label(c_window, text='Success!', font=('Arial', 15)).pack()
+                btn_main = tk.Button(c_window, text='Main', width=10, command=budget_window.destroy)
+                btn_main.place(x=90, y=75)
+
 
         budget_window = tk.Toplevel(main)
         budget_window.title('Change Budget')
         budget_window.geometry('500x300')
 
-        new_budget = tk.IntVar()
+        new_budget = tk.DoubleVar()
         budget_title = tk.Label(budget_window, text='Change Your Budget', font=('Arial', 15))
         budget_title.place(x=160, y=80)
         budget_label = tk.Label(budget_window, text='Budget: ')
@@ -363,23 +385,40 @@ def dashboard(userid):
                 global user_budget
                 global expense
 
-                detail_old = tList.get(tk.ACTIVE)
-                type_old = str(detail_old).split(' ')[1][:-1]
-                amount_old = float(str(detail_old).split(' ')[-1])
-                tList.delete(tk.ACTIVE)
-                tList.insert(0, "Type: " + str(edit_type) + ",  Amount: " + str(edit_amount))
+                try:
+                    try_amount = edit_amount / 3.0 + 1.2
+                    if edit_amount == 0:
+                        try_day = datetime.datetime.strptime('1234', "%Y-%m-%d")
 
-                user_expense.loc[(user_expense['type'] == type_old) & (user_expense['amount'] == amount_old) & \
-                                 (user_expense['date'] == today), ('type', 'amount')] = [edit_type, float(edit_amount)]
-                expense.loc[
-                    (expense['type'] == type_old) & (expense['amount'] == amount_old) & (expense['date'] == today) & \
-                    (expense['userId'] == userid), ('type', 'amount')] = [edit_type, float(edit_amount)]
-                # user_expense['date'] = user_expense['date'].map(lambda x: str(x).split(' ')[0])
-                user_expense.to_excel('user_expense.xlsx')
-                expense.to_excel('expense.xlsx')
-                s_window.destroy()
-                show_detail()
-                show_today_exp(today)
+                    detail_old = tList.get(tk.ACTIVE)
+                    type_old = str(detail_old).split(' ')[1][:-1]
+                    amount_old = float(str(detail_old).split(' ')[-1])
+                    tList.delete(tk.ACTIVE)
+                    tList.insert(0, "Type: " + str(edit_type) + ",  Amount: " + str(edit_amount))
+
+                    user_expense.loc[(user_expense['type'] == type_old) & (user_expense['amount'] == amount_old) & \
+                                     (user_expense['date'] == today), ('type', 'amount')] = [edit_type,
+                                                                                             float(edit_amount)]
+                    expense.loc[
+                        (expense['type'] == type_old) & (expense['amount'] == amount_old) & (expense['date'] == today) & \
+                        (expense['userId'] == userid), ('type', 'amount')] = [edit_type, float(edit_amount)]
+                    user_expense.to_excel('user_expense.xlsx')
+                    expense.to_excel('expense.xlsx')
+
+                    show_detail()
+                    show_today_exp(today)
+
+                except:
+                    c_window = tk.Toplevel(s_window)
+                    c_window.title('Error')
+                    c_window.geometry('250x150')
+                    change_label = tk.Label(c_window, text='Wrong Input Format', font=('Arial', 15)).pack()
+                    btn_main = tk.Button(c_window, text='Input Again', width=10, command=c_window.destroy)
+                    btn_main.place(x=90, y=75)
+
+                else:
+                    s_window.destroy()
+
 
             s_window = tk.Toplevel(detail_window)
             s_window.title('Edit')
@@ -387,7 +426,7 @@ def dashboard(userid):
             edit_label = tk.Label(s_window, text='Edit', font=('Arial', 15))
             edit_label.place(x=185, y=20)
             # new amount
-            edit_amount = tk.StringVar()
+            edit_amount = tk.DoubleVar()
             edit_amount_label = tk.Label(s_window, text='Amount: ')
             edit_amount_label.place(x=90, y=75)
             edit_amount_entry = tk.Entry(s_window, textvariable=edit_amount)
@@ -414,24 +453,39 @@ def dashboard(userid):
                 global user_expense
                 global user_budget
 
-                detail_old = tList.get(tk.ACTIVE)
-                type_old = str(detail_old).split(' ')[1][:-1]
-                amount_old = float(str(detail_old).split(' ')[-1])
-                tList.delete(tk.ACTIVE)
+                try:
+                    detail_old = tList.get(tk.ACTIVE)
+                    type_old = str(detail_old).split(' ')[1][:-1]
+                    amount_old = float(str(detail_old).split(' ')[-1])
+                    tList.delete(tk.ACTIVE)
 
-                user_expense.drop(index=user_expense.loc[(user_expense['type'] == type_old) & \
-                                                         (user_expense['amount'] == float(amount_old)) & \
-                                                         (user_expense['date'] == today)].index, \
-                                  inplace=True)
-                expense.drop(index=expense.loc[(expense['type'] == type_old) & \
-                                               (expense['amount'] == float(amount_old)) & \
-                                               (expense['date'] == today)].index, \
-                             inplace=True)
-                user_expense.to_excel('user_expense.xlsx')
-                expense.to_excel('expense.xlsx')
-                s_window.destroy()
-                show_detail()
-                show_today_exp(today)
+                    user_expense.drop(index=user_expense.loc[(user_expense['type'] == type_old) & \
+                                                             (user_expense['amount'] == float(amount_old)) & \
+                                                             (user_expense['date'] == today)].index, \
+                                      inplace=True)
+                    expense.drop(index=expense.loc[(expense['type'] == type_old) & \
+                                                   (expense['amount'] == float(amount_old)) & \
+                                                   (expense['date'] == today)].index, \
+                                 inplace=True)
+                    user_expense.to_excel('user_expense.xlsx')
+                    expense.to_excel('expense.xlsx')
+
+                    if not today in list(user_expense['date']):
+                        show()
+                    else:
+                        show_detail()
+                        show_today_exp()
+
+                except:
+                    c_window = tk.Toplevel(s_window)
+                    c_window.title('Error')
+                    c_window.geometry('250x150')
+                    change_label = tk.Label(c_window, text='Wrong Input Format', font=('Arial', 15)).pack()
+                    btn_main = tk.Button(c_window, text='Input Again', width=10, command=c_window.destroy)
+                    btn_main.place(x=90, y=75)
+
+                else:
+                    s_window.destroy()
 
             s_window = tk.Toplevel(detail_window)
             s_window.title('Remove')
@@ -442,6 +496,7 @@ def dashboard(userid):
             btn_yes.place(x=40, y=75)
             btn_no = tk.Button(s_window, text='No', width=10, command=s_window.destroy)
             btn_no.place(x=140, y=75)
+
 
         detail_window = tk.Toplevel(main)
         detail_window.title('Check Details')
@@ -488,27 +543,42 @@ def dashboard(userid):
             global user_budget
             global expense
 
-            user_expense = user_expense.append({'type': type, 'amount': amount, 'date': date}, ignore_index=True)
-            user_expense['date'] = user_expense['date'].map(lambda x: str(x).split(' ')[0])
-            user_expense = user_expense[['type', 'amount', 'date']]
-            expense = expense.append({'type': type, 'amount': amount, 'date': date, 'userId': userid},
-                                     ignore_index=True)
-            expense['date'] = expense['date'].map(lambda x: str(x).split(' ')[0])
-            expense = expense[['type', 'amount', 'date', 'userId']]
-            user_expense.to_excel('user_expense.xlsx')
-            expense.to_excel('expense.xlsx')
+            try:
+                try_day = datetime.datetime.strptime(date, "%Y-%m-%d")
+                try_amount = amount / 3.0 + 1.2
+                if amount == 0 or len(date) != 10:
+                    try_day = datetime.datetime.strptime('1234', "%Y-%m-%d")
 
-            s_window = tk.Toplevel(add_window)
-            s_window.title('Success')
-            s_window.geometry('250x150')
-            success_label = tk.Label(s_window, text='Success!', font=('Arial', 15)).pack()
-            btn_main = tk.Button(s_window, text='Main', width=10, command=add_window.destroy)
-            btn_main.place(x=40, y=75)
-            btn_addmore = tk.Button(s_window, text='Add More', width=10, command=s_window.destroy)
-            btn_addmore.place(x=140, y=75)
+                user_expense = user_expense.append({'type': type, 'amount': amount, 'date': date}, ignore_index=True)
+                user_expense['date'] = user_expense['date'].map(lambda x: str(x).split(' ')[0])
+                user_expense = user_expense[['type', 'amount', 'date']]
+                expense = expense.append({'type': type, 'amount': amount, 'date': date, 'userId': userid},\
+                                         ignore_index=True)
+                expense['date'] = expense['date'].map(lambda x: str(x).split(' ')[0])
+                expense = expense[['type', 'amount', 'date', 'userId']]
+                user_expense.to_excel('user_expense.xlsx')
+                expense.to_excel('expense.xlsx')
 
-            show_detail()
-            show_today_exp(today)
+                show()
+
+            except:
+                c_window = tk.Toplevel(add_window)
+                c_window.title('Error')
+                c_window.geometry('250x150')
+                change_label = tk.Label(c_window, text='Wrong Input Format', font=('Arial', 15)).pack()
+                btn_main = tk.Button(c_window, text='Input Again', width=10, command=c_window.destroy)
+                btn_main.place(x=90, y=75)
+
+            else:
+                s_window = tk.Toplevel(add_window)
+                s_window.title('Success')
+                s_window.geometry('250x150')
+                success_label = tk.Label(s_window, text='Success!', font=('Arial', 15)).pack()
+                btn_main = tk.Button(s_window, text='Main', width=10, command=add_window.destroy)
+                btn_main.place(x=40, y=75)
+                btn_addmore = tk.Button(s_window, text='Add More', width=10, command=s_window.destroy)
+                btn_addmore.place(x=140, y=75)
+
 
         add_window = tk.Toplevel(main)
         add_window.title('Add Expenses')
@@ -526,7 +596,7 @@ def dashboard(userid):
         date_entry.place(x=180, y=120)
 
         # new amount
-        add_amount = tk.IntVar()
+        add_amount = tk.DoubleVar()
         amount_label = tk.Label(add_window, text='Amount: ')
         amount_label.place(x=120, y=150)
         amount_entry = tk.Entry(add_window, textvariable=add_amount)
