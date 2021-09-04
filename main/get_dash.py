@@ -9,7 +9,15 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 from pandas import DataFrame
+from new_user import *
 
+def check_new(userid):
+    budget = pd.read_excel('/Users/chenshi/Documents/GitHub/PythonProgramming/main/budget.xlsx')
+    user_budget = budget[(budget['userId'] == userid)].drop(['userId'], axis=1, inplace=False)
+    if user_budget.empty:
+        return True
+    else:
+        return False
 
 def dashboard(userid):
     global expense
@@ -34,6 +42,12 @@ def dashboard(userid):
     main = tk.Tk()
     main.title('Python Expenses Recorder')
     main.geometry('700x500')
+
+    # Display logo
+    logo = tk.Canvas(main, height=120, width=230)  # change size of logo
+    image_file = tk.PhotoImage(file="normal.gif")  # change our logo here
+    image = logo.create_image(80, 60, anchor='center', image=image_file)
+    logo.place(x=30, y=50)
 
     def get_today_data(day):
         global user_expense
@@ -109,12 +123,6 @@ def dashboard(userid):
         return pie, bar
 
     def show():
-        # Display logo
-        logo = tk.Canvas(main, height=60, width=60)  # change size of logo
-        image_file = tk.PhotoImage(file="normal.gif")  # change our logo here
-        image = logo.create_image(0, 0, anchor='center', image=image_file)
-        logo.place(x=50, y=70)
-
         # Textbox2 title
         month_names = {1: 'January', 2: 'February', 3: 'March', 4: 'April', 5: 'May', 6: 'June', 7: 'July', 8: 'August', \
                        9: 'September', 10: 'September', 11: 'November', 12: 'December'}
@@ -546,8 +554,6 @@ def dashboard(userid):
         if msgBox == 'yes':
             tk.messagebox.showinfo("Thank you", "See you Again!")
             main.destroy()
-
     show()
     main.mainloop()
 
-#dashboard('Dixon3220')

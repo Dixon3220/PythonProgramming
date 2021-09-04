@@ -99,7 +99,11 @@ class LoginPage(object):
                     #userid = usr_name
                     destroy(root)
                     userid = usr_name
-                    dashboard(str(userid))
+                    if check_new(userid):
+                        new_user_page(userid)
+                        dashboard(str(userid))
+                    else:
+                        dashboard(str(userid))
 
                 # if username match while password wrong
                 else:
