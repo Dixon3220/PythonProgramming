@@ -403,9 +403,21 @@ def check_detail():
         edit_types.place(x=160, y=135)
         edit_type_label = tk.Label(s_window, text='Type: ')
         edit_type_label.place(x=90, y=135)
+
+        def check_edit_amount_valid():
+            try:
+                edit_amount_amount.get()
+            except:
+                s_window = tk.Toplevel(detail_window)
+                s_window.title('Warning')
+                s_window.geometry('500x150')
+                success_label = tk.Label(s_window, text='Please enter the amount as a number!',
+                                         font=('Arial', 15)).pack()
+                btn_addmore = tk.Button(s_window, text='Re-enter', width=10, command=s_window.destroy)
+                btn_addmore.place(x=200, y=75)
         # button
-        btn_yes = tk.Button(s_window, text='Confirm', width=10, command= \
-            lambda: editdetail_yes(tList, s_window, edit_amount.get(), edit_type.get()))
+        btn_yes = tk.Button(s_window, text='Confirm', width=10, command=
+            lambda: [check_edit_amount_valid(),editdetail_yes(tList, s_window, edit_amount.get(), edit_type.get())])
         btn_yes.place(x=120, y=200)
         btn_no = tk.Button(s_window, text='Cancel', width=10, command=s_window.destroy)
         btn_no.place(x=220, y=200)
