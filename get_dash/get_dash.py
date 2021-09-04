@@ -533,10 +533,21 @@ def add_expenses():
     type_label = tk.Label(add_window, text='Type: ')
     type_label.place(x=130, y=180)
 
+    def check_amount_valid():
+        try:
+            add_amount.get()
+        except:
+            s_window = tk.Toplevel(add_window)
+            s_window.title('Warning')
+            s_window.geometry('500x150')
+            success_label = tk.Label(s_window, text='Please enter the amount as a number!', font=('Arial', 15)).pack()
+            btn_addmore = tk.Button(s_window, text='Re-enter', width=10, command=s_window.destroy)
+            btn_addmore.place(x=200,y=75)
+
     # Confirm & back button
-    btn_add = tk.Button(add_window, text='Add', width=13, command=lambda: addexp_success(new_date.get(), \
-                                                                                         add_amount.get(),
-                                                                                         add_type.get()))
+    btn_add = tk.Button(add_window, text='Add', width=13,
+                        command=lambda:[check_amount_valid(),addexp_success(new_date.get(),add_amount.get(),add_type.get())])
+
     btn_add.place(x=200, y=230)
     btn_back = tk.Button(add_window, text='Back', width=13, command=add_window.destroy)
     btn_back.place(x=20, y=20)
