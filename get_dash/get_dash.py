@@ -406,7 +406,7 @@ def check_detail():
 
         def check_edit_amount_valid():
             try:
-                edit_amount_amount.get()
+                edit_amount.get()
             except:
                 s_window = tk.Toplevel(detail_window)
                 s_window.title('Warning')
