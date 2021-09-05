@@ -391,7 +391,7 @@ def check_detail():
         edit_label = tk.Label(s_window, text='Edit', font=('Arial', 15))
         edit_label.place(x=185, y=20)
         # new amount
-        edit_amount = tk.StringVar()
+        edit_amount = tk.IntVar()
         edit_amount_label = tk.Label(s_window, text='Amount: ')
         edit_amount_label.place(x=90, y=75)
         edit_amount_entry = tk.Entry(s_window, textvariable=edit_amount)
