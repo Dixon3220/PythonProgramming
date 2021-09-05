@@ -4,6 +4,7 @@ import tkinter as tk
 from tkinter import ttk
 from get_dash import *
 
+
 def new_user_page(userid):
     global expense
     global budget
@@ -12,8 +13,8 @@ def new_user_page(userid):
     global user_expense
     global user_budget
 
-    expense = pd.read_excel('expense.xlsx')  # [ignore this comment, only for testing] expense = pd.read_excel('D:\Python\Python_Programming\project\coding\PythonProgramming\get_dash\expense.xlsx')
-    budget = pd.read_excel('budget.xlsx')  # [ignore this comment, only for testing]  budget = pd.read_excel('D:\Python\Python_Programming\project\coding\PythonProgramming\get_dash\\budget.xlsx')
+    expense = pd.read_excel('/Users/chenshi/Documents/GitHub/PythonProgramming/main/expense.xlsx')  # [ignore this comment, only for testing] expense = pd.read_excel('D:\Python\Python_Programming\project\coding\PythonProgramming\get_dash\expense.xlsx')
+    budget = pd.read_excel('/Users/chenshi/Documents/GitHub/PythonProgramming/main/budget.xlsx')  # [ignore this comment, only for testing]  budget = pd.read_excel('D:\Python\Python_Programming\project\coding\PythonProgramming\get_dash\\budget.xlsx')
 
     # get information from the user, this could be changed in main, especially for month.
     # today = date.today()
@@ -39,7 +40,8 @@ def new_user_page(userid):
             if amount == 0 or bud == 0 or len(date) != 10:
                 try_day = datetime.datetime.strptime('1234', "%Y-%m-%d")
 
-            expense = expense.append({'type': type, 'amount': amount, 'date': date, 'userId': userid}, ignore_index=True)
+            expense = expense.append({'type': type, 'amount': amount, 'date': date, 'userId': userid},
+                                     ignore_index=True)
             budget = budget.append({'budget': bud, 'userId': userid}, ignore_index=True)
             expense['date'] = expense['date'].map(lambda x: str(x).split(' ')[0])
             expense = expense[['type', 'amount', 'date', 'userId']]
@@ -106,4 +108,4 @@ def new_user_page(userid):
 
     new_user.mainloop()
 
-#new_user_page('xyz')
+# new_user_page('xyz')

@@ -4,14 +4,18 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ecbec057-a79a-400b-a6f5-aa05568e61e0" name="Changes" comment="Changes">
+    <list default="true" id="ecbec057-a79a-400b-a6f5-aa05568e61e0" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/get_dash/expense.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/get_dash/expense.xlsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/get_dash/user_expense.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/get_dash/user_expense.xlsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/Login.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/main/budget.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/main/budget.xlsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main/expense.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/main/expense.xlsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main/get_dash.py" beforeDir="false" afterPath="$PROJECT_DIR$/main/get_dash.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main/new_user.py" beforeDir="false" afterPath="$PROJECT_DIR$/main/new_user.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/user_budget.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/main/user_budget.xlsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main/user_expense.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/main/user_expense.xlsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main/usrs_info.pickle" beforeDir="false" afterPath="$PROJECT_DIR$/main/usrs_info.pickle" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -178,7 +182,7 @@
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
-      <option name="SDK_HOME" value="E:\Software\Study\Python\Python\python.exe" />
+      <option name="SDK_HOME" value="$USER_HOME$/miniforge3/bin/python3.9" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/main" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
@@ -269,6 +273,7 @@
       <workItem from="1630660616735" duration="1305000" />
       <workItem from="1630664298069" duration="1508000" />
       <workItem from="1630720017122" duration="3724000" />
+      <workItem from="1630832638098" duration="887000" />
     </task>
     <servers />
   </component>
@@ -286,5 +291,19 @@
       </map>
     </option>
     <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/PythonProgramming$main_test.coverage" NAME="main_test Coverage Results" MODIFIED="1630250625013" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/main" />
+    <SUITE FILE_PATH="coverage/PythonProgramming$main_py.coverage" NAME="main.py Coverage Results" MODIFIED="1630487871243" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/main menu" />
+    <SUITE FILE_PATH="coverage/PythonProgramming$pythonprogrammingproject.coverage" NAME="pythonprogrammingproject Coverage Results" MODIFIED="1630247083224" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/origin" />
+    <SUITE FILE_PATH="coverage/PythonProgramming$Login.coverage" NAME="Login Coverage Results" MODIFIED="1630499675157" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/main" />
+    <SUITE FILE_PATH="coverage/main_py$main.coverage" NAME="main Coverage Results" MODIFIED="1630832674986" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/main" />
+    <SUITE FILE_PATH="coverage/PythonProgramming$main.coverage" NAME="main Coverage Results" MODIFIED="1630500911341" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/main" />
+    <SUITE FILE_PATH="coverage/PythonProgramming$get_dash.coverage" NAME="get_dash Coverage Results" MODIFIED="1630503435011" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/main" />
+    <SUITE FILE_PATH="coverage/PythonProgramming$Ledger.coverage" NAME="Ledger Coverage Results" MODIFIED="1630488951208" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/origin" />
+    <SUITE FILE_PATH="coverage/main_py$new_user.coverage" NAME="new_user Coverage Results" MODIFIED="1630721468427" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/main" />
+    <SUITE FILE_PATH="coverage/main_py$Login.coverage" NAME="Login Coverage Results" MODIFIED="1630600789511" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/main" />
+    <SUITE FILE_PATH="coverage/main_py$get_dash.coverage" NAME="get_dash Coverage Results" MODIFIED="1630722484123" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/main" />
+    <SUITE FILE_PATH="coverage/main_py$get_dash_1.coverage" NAME="get_dash_1 Coverage Results" MODIFIED="1630832805673" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/get_dash" />
   </component>
 </project>
