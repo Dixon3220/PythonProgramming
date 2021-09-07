@@ -13,7 +13,7 @@ from new_user import *
 
 
 def check_new(userid):
-    budget = pd.read_excel('/Users/chenshi/Documents/GitHub/PythonProgramming/main/budget.xlsx')
+    budget = pd.read_excel('budget.xlsx')
     user_budget = budget[(budget['userId'] == userid)].drop(['userId'], axis=1, inplace=False)
     if user_budget.empty:
         return True
@@ -30,8 +30,8 @@ def dashboard(userid):
     global user_budget
 
     # read data
-    expense = pd.read_excel('/Users/chenshi/Documents/GitHub/PythonProgramming/main/expense.xlsx')
-    budget = pd.read_excel('/Users/chenshi/Documents/GitHub/PythonProgramming/main/budget.xlsx')
+    expense = pd.read_excel('expense.xlsx')
+    budget = pd.read_excel('budget.xlsx')
 
     # get the data required
     user_expense = expense[(expense['userId'] == userid)].drop(['userId'], axis=1, inplace=False)
@@ -43,7 +43,7 @@ def dashboard(userid):
 
     main = tk.Tk()
     main.title('Python Expenses Recorder')
-    main.geometry('700x500')
+    main.geometry('700x500+100+50')
 
     # Display logo
     logo = tk.Canvas(main, height=120, width=230)  # change size of logo
@@ -340,7 +340,7 @@ def dashboard(userid):
             except:
                 c_window = tk.Toplevel(budget_window)
                 c_window.title('Error')
-                c_window.geometry('250x150')
+                c_window.geometry('250x150+1000+250')
                 change_label = tk.Label(c_window, text='Wrong Input Format', font=('Arial', 15)).pack()
                 btn_main = tk.Button(c_window, text='Input Again', width=10, command=c_window.destroy)
                 btn_main.place(x=90, y=75)
@@ -348,14 +348,14 @@ def dashboard(userid):
             else:
                 c_window = tk.Toplevel(budget_window)
                 c_window.title('Success')
-                c_window.geometry('250x150')
+                c_window.geometry('250x150+1000+250')
                 change_label = tk.Label(c_window, text='Success!', font=('Arial', 15)).pack()
                 btn_main = tk.Button(c_window, text='Main', width=10, command=budget_window.destroy)
                 btn_main.place(x=90, y=75)
 
         budget_window = tk.Toplevel(main)
         budget_window.title('Change Budget')
-        budget_window.geometry('500x300')
+        budget_window.geometry('500x300+900+150')
 
         new_budget = tk.DoubleVar()
         budget_title = tk.Label(budget_window, text='Change Your Budget', font=('Arial', 15))
@@ -371,15 +371,15 @@ def dashboard(userid):
             except:
                 c_window = tk.Toplevel(budget_window)
                 c_window.title('Warning')
-                c_window.geometry('500x150')
+                c_window.geometry('500x150+1000+250')
                 success_label = tk.Label(c_window, text='Please enter the budget as a number!',
                                          font=('Arial', 15)).pack()
                 btn_re_enter = tk.Button(c_window, text='Re-enter', width=10, command=c_window.destroy)
                 btn_re_enter.place(x=200, y=75)
 
         # Confirm & back button
-        btn_confirm_budget = tk.Button(btn_confirm_budget = tk.Button(budget_window, text='Confirm', width=13, command=lambda:[check_budget_valid(),
-                                                                                                                               change_success(new_budget.get())]))
+        btn_confirm_budget = tk.Button(budget_window, text='Confirm', width=13, command=lambda:[check_budget_valid(),
+                                                                                                change_success(new_budget.get())])
         btn_confirm_budget.place(x=220, y=150)
         btn_back = tk.Button(budget_window, text='Back', width=13, command=budget_window.destroy)
         btn_back.place(x=20, y=20)
@@ -424,7 +424,7 @@ def dashboard(userid):
                 except:
                     c_window = tk.Toplevel(s_window)
                     c_window.title('Error')
-                    c_window.geometry('250x150')
+                    c_window.geometry('250x150+1000+250')
                     change_label = tk.Label(c_window, text='Wrong Input Format', font=('Arial', 15)).pack()
                     btn_main = tk.Button(c_window, text='Input Again', width=10, command=c_window.destroy)
                     btn_main.place(x=90, y=75)
@@ -434,7 +434,7 @@ def dashboard(userid):
 
             s_window = tk.Toplevel(detail_window)
             s_window.title('Edit')
-            s_window.geometry('400x250')
+            s_window.geometry('400x250+1000+250')
             edit_label = tk.Label(s_window, text='Edit', font=('Arial', 15))
             edit_label.place(x=185, y=20)
             # new amount
@@ -457,14 +457,14 @@ def dashboard(userid):
                 except:
                     s_window = tk.Toplevel(detail_window)
                     s_window.title('Warning')
-                    s_window.geometry('500x150')
+                    s_window.geometry('500x150+1000+250')
                     success_label = tk.Label(s_window, text='Please enter the amount as a number!',
                                              font=('Arial', 15)).pack()
                     btn_addmore = tk.Button(s_window, text='Re-enter', width=10, command=s_window.destroy)
                     btn_addmore.place(x=200, y=75)
 
             # button
-            btn_yes = tk.Button(btn_yes = tk.Button(s_window, text='Confirm', width=10, command=lambda: [check_edit_amount_valid(),editdetail_yes(tList, s_window, edit_amount.get(), edit_type.get())]))
+            btn_yes = tk.Button(s_window, text='Confirm', width=10, command=lambda: [check_edit_amount_valid(),editdetail_yes(tList, s_window, edit_amount.get(), edit_type.get())])
             btn_yes.place(x=120, y=200)
             btn_no = tk.Button(s_window, text='Cancel', width=10, command=s_window.destroy)
             btn_no.place(x=220, y=200)
@@ -477,43 +477,33 @@ def dashboard(userid):
                 global user_expense
                 global user_budget
 
-                try:
-                    detail_old = tList.get(tk.ACTIVE)
-                    type_old = str(detail_old).split(' ')[1][:-1]
-                    amount_old = float(str(detail_old).split(' ')[-1])
-                    tList.delete(tk.ACTIVE)
+                detail_old = tList.get(tk.ACTIVE)
+                type_old = str(detail_old).split(' ')[1][:-1]
+                amount_old = float(str(detail_old).split(' ')[-1])
+                tList.delete(tk.ACTIVE)
 
-                    user_expense.drop(index=user_expense.loc[(user_expense['type'] == type_old) & \
-                                                             (user_expense['amount'] == float(amount_old)) & \
-                                                             (user_expense['date'] == today)].index, \
-                                      inplace=True)
-                    expense.drop(index=expense.loc[(expense['type'] == type_old) & \
-                                                   (expense['amount'] == float(amount_old)) & \
-                                                   (expense['date'] == today)].index, \
-                                 inplace=True)
-                    user_expense.to_excel('user_expense.xlsx')
-                    expense.to_excel('expense.xlsx')
+                user_expense.drop(index=user_expense.loc[(user_expense['type'] == type_old) & \
+                                                        (user_expense['amount'] == float(amount_old)) & \
+                                                        (user_expense['date'] == today)].index, \
+                                inplace=True)
+                expense.drop(index=expense.loc[(expense['type'] == type_old) & \
+                                                (expense['amount'] == float(amount_old)) & \
+                                                (expense['date'] == today)].index, \
+                                inplace=True)
+                user_expense.to_excel('user_expense.xlsx')
+                expense.to_excel('expense.xlsx')
 
-                    if not today in list(user_expense['date']):
-                        show()
-                    else:
-                        show_detail()
-                        show_today_exp()
-
-                except:
-                    c_window = tk.Toplevel(s_window)
-                    c_window.title('Error')
-                    c_window.geometry('250x150')
-                    change_label = tk.Label(c_window, text='Wrong Input Format', font=('Arial', 15)).pack()
-                    btn_main = tk.Button(c_window, text='Input Again', width=10, command=c_window.destroy)
-                    btn_main.place(x=90, y=75)
-
+                if not today in list(user_expense['date']):
+                    show()
                 else:
-                    s_window.destroy()
+                    show_detail()
+                    show_today_exp(today)
+
+                s_window.destroy()
 
             s_window = tk.Toplevel(detail_window)
             s_window.title('Remove')
-            s_window.geometry('250x150')
+            s_window.geometry('250x150+1000+250')
             remove_label = tk.Label(s_window, text='Remove?', font=('Arial', 15))
             remove_label.place(x=88, y=20)
             btn_yes = tk.Button(s_window, text='Yes', width=10, command=lambda: removedetail_yes(tList, s_window))
@@ -523,7 +513,7 @@ def dashboard(userid):
 
         detail_window = tk.Toplevel(main)
         detail_window.title('Check Details')
-        detail_window.geometry('500x340')
+        detail_window.geometry('500x340+900+150')
 
         # Title
         detail_title = tk.Label(detail_window, text='Check Details', font=('Arial', 15))
@@ -587,7 +577,7 @@ def dashboard(userid):
             except:
                 c_window = tk.Toplevel(add_window)
                 c_window.title('Error')
-                c_window.geometry('250x150')
+                c_window.geometry('250x150+1000+250')
                 change_label = tk.Label(c_window, text='Wrong Input Format', font=('Arial', 15)).pack()
                 btn_main = tk.Button(c_window, text='Input Again', width=10, command=c_window.destroy)
                 btn_main.place(x=90, y=75)
@@ -595,7 +585,7 @@ def dashboard(userid):
             else:
                 s_window = tk.Toplevel(add_window)
                 s_window.title('Success')
-                s_window.geometry('250x150')
+                s_window.geometry('250x150+1000+250')
                 success_label = tk.Label(s_window, text='Success!', font=('Arial', 15)).pack()
                 btn_main = tk.Button(s_window, text='Main', width=10, command=add_window.destroy)
                 btn_main.place(x=40, y=75)
@@ -604,7 +594,7 @@ def dashboard(userid):
 
         add_window = tk.Toplevel(main)
         add_window.title('Add Expenses')
-        add_window.geometry('500x300')
+        add_window.geometry('500x300+900+150')
 
         # Title
         add_title = tk.Label(add_window, text='Add New Expense', font=('Arial', 15))
@@ -638,7 +628,7 @@ def dashboard(userid):
             except:
                 s_window = tk.Toplevel(add_window)
                 s_window.title('Warning')
-                s_window.geometry('500x150')
+                s_window.geometry('500x150+1000+250')
                 success_label = tk.Label(s_window, text='Please enter the amount as a number!',
                                          font=('Arial', 15)).pack()
                 btn_addmore = tk.Button(s_window, text='Re-enter', width=10, command=s_window.destroy)
