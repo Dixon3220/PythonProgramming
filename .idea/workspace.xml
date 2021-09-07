@@ -9,7 +9,7 @@
       <change beforePath="$PROJECT_DIR$/main/budget.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/main/budget.xlsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main/expense.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/main/expense.xlsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main/get_dash.py" beforeDir="false" afterPath="$PROJECT_DIR$/main/get_dash.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main/new_user.py" beforeDir="false" afterPath="$PROJECT_DIR$/main/new_user.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main/user_budget.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/main/user_budget.xlsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main/user_expense.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/main/user_expense.xlsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main/usrs_info.pickle" beforeDir="false" afterPath="$PROJECT_DIR$/main/usrs_info.pickle" afterDir="false" />

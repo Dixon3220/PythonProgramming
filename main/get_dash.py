@@ -407,7 +407,7 @@ def dashboard(userid):
                     type_old = str(detail_old).split(' ')[1][:-1]
                     amount_old = float(str(detail_old).split(' ')[-1])
                     tList.delete(tk.ACTIVE)
-                    tList.insert(0, "Type: " + str(edit_type) + ",  Amount: " + str(edit_amount))
+                    tList.insert(0, "Type: " + str(edit_type) + ",  Amount: " + "{:.1f}".format(edit_amount))
 
                     user_expense.loc[(user_expense['type'] == type_old) & (user_expense['amount'] == amount_old) & \
                                      (user_expense['date'] == today), ('type', 'amount')] = [edit_type,
@@ -438,7 +438,7 @@ def dashboard(userid):
             edit_label = tk.Label(s_window, text='Edit', font=('Arial', 15))
             edit_label.place(x=185, y=20)
             # new amount
-            edit_amount = tk.IntVar()
+            edit_amount = tk.DoubleVar()
             edit_amount_label = tk.Label(s_window, text='Amount: ')
             edit_amount_label.place(x=90, y=75)
             edit_amount_entry = tk.Entry(s_window, textvariable=edit_amount)
@@ -533,7 +533,7 @@ def dashboard(userid):
         tList.place(x=80, y=110, width=360, height=140)
         for row in range(today_data.shape[0]):
             text = today_data.iloc[row]
-            tList.insert(tk.END, "Type: " + text['type'] + ",  Amount: " + str(text['amount']))
+            tList.insert(tk.END, "Type: " + text['type'] + ",  Amount: " + "{:.1f}".format(text['amount']))
         tScroll.config(command=tList.yview)
         # edit button
         teditbutton = tk.Button(detail_window, text='edit', command=lambda: checkdetail_editdetail(tList))

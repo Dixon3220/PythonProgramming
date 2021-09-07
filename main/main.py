@@ -16,10 +16,10 @@ def Login():
             model = pickle.load(file)
 
         window_admin = tk.Tk()
-        window_admin.geometry('300x400')
+        window_admin.geometry('400x400')
         window_admin.title('Administration')
         window_admin.configure(bg='black')
-        account_list = tkinter.Listbox(window_admin, bg='black', font=('Arial', 15), bd=15, width=30)
+        account_list = tkinter.Listbox(window_admin, fg = 'white', bg='black', font=('Arial', 15), bd=30, width=30)
         account_list.pack()
 
         account_list.insert(tkinter.END, '| USERNAME / PASSWORD |')
